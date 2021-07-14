@@ -1,0 +1,636 @@
+*{  
+   font-size: 13px;
+   box-sizing: border-box;
+}
+body{
+    /* width: 1200px;
+    max-width: 1200px; */
+    margin: 0 auto;
+    font-family: '微軟正黑體';
+}
+/* -------------------通用法則------------- */
+.space-between{
+    justify-content: space-between;
+}
+.width1200{
+    width: 1220px;
+    margin: 0 auto;
+}
+.flex{
+    display: flex;
+}
+/* -------------header nav---------------------- */
+header nav{
+    /* width: 100%; */
+    background-color: #ECECEC;
+
+}
+.row{
+    /* margin: 30px ; */
+    background-color: #ECECEC;
+    margin: 0 auto;
+    width: 1220px;
+    display: flex;
+    padding: 10px 15px 10px;
+}
+.row a{
+    text-decoration: none;
+    color: #000;
+    font-size: 13px;
+    padding:0 8px;
+    border-right: 1px solid black;
+}
+/* -------------header search---------------------- */
+.search-img{
+    background: url(./momo購物網_files/banner.jpg);
+    background-position: center center;
+    width: 100%;
+    height: 160px;
+}
+.logo{
+    background: url(./momo購物網_files/bt_0_243_01_e2.png) no-repeat;
+    width: 300px;
+    height: 100px;
+    background-size: 90%;
+    /* margin-left: 200px; */
+}
+.searchbox{
+    position: relative;
+    padding-top: 40px;
+    padding-left: 30px;
+
+}
+.searchbox input{
+    width: 440px;
+    height: 40px;
+    border-radius: 20px;
+}
+.hot{
+    font-size: 13px;
+    padding: 20px 0px;
+    color: #D62872;
+
+}
+.hot a{
+    text-decoration: none;
+    color: #D62872;
+    font-size: 13px;
+    padding:0 8px;
+    border-right: 1px solid #D62872;
+}
+.gotosearch{
+    position: absolute;
+    height: 40px;
+    border-radius: 0 20px 20px 0;
+    width: 100px;
+    background-color: #515151;
+    display: flex;
+    justify-content: center;
+    line-height: 40px;
+    font-weight: bold;
+    color: white;
+    top: 40px;
+    right: 0;
+}
+
+.searchad .ad1{
+    background: url(./momo購物網_files/bt_0_245_01_P1_1_e2.png);
+    width: 120px;
+    height: 70px;
+    background-size: cover;
+}
+.searchad .ad2{
+    background: url(./momo購物網_files/bt_0_245_01_P1_2_e2.png);
+    width: 105px;
+    height: 70px;
+    background-size: cover;
+}
+.searchad .ad3{
+    background: url(./momo購物網_files/bt_0_245_01_P1_3_e2.png);
+    width: 120px;
+    height: 70px;
+    background-size: cover;
+}
+.searchad {
+    margin-left: 80px;
+    margin-top: 25px;
+}
+
+/* -------------header menu---------------- */
+
+.headermenu{
+    display: flex;
+    margin-top: -36px;
+}
+.allbtn{
+    background: url(./momo購物網_files/menutitle.png);
+    width: 200px;
+    height: 36px;
+    background-size: cover;
+    box-shadow: 0 5px 5px black;
+}
+.purplebtn{
+    justify-content: flex-end;
+    height: 36px;
+    width: 100px;
+    display: flex;
+}
+/*----------------- header banner--------------------------------------- */
+.mainthemebg{
+    background: #ddd;
+}
+.allwebmenu ul{
+    position: absolute;
+    width: 200px;
+    padding: 20px 0px;
+    background: #555;
+}
+.allwebmenu li{
+    font-size: 14px;
+    width: 200px;
+    padding: 10px 10px;
+    color: white;
+    /* background: #aaa; */
+}
+.banner{
+    margin-left: 200px;
+    width: 818px;
+    background: url(./momo購物網_files/bt_0_247_01_P1_13_e2.jpg)no-repeat;
+    height: 370px ;
+    background-color: #eae;
+}
+.todaybig{
+    width: 200px;
+    height: 100%;
+    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    /* border: 1px solid #000; */
+
+}
+.todaybig img{
+    width: 100%;
+}
+.bannerbottom{
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+.bannerbottom .bbb{
+    height: 120px;
+    /* margin-top: 20px; */
+    margin-left: 210px;
+}
+.bannerbottom .video{
+    width: 270px;
+    height: 120px;
+    margin-left: 10px;
+    background-color: #FBF3E6;
+}
+.bannerbottom .video img , .bannerbottom .tvshop img{
+    height: 30px;
+    width: 270px;
+}
+.bannerbottom .video .bgy{
+    width: 100%;
+    height: 90px;
+    /* background: #000; */
+}
+.bgy p{
+    padding-top: 10px;
+}
+.bannerbottom .tvshop{
+    width: 270px;
+    height: 120px;
+    margin-left: 10px;
+    background-color: #F9F0F4;
+}
+/* --------------section luck77--------------- */
+.lucky77-margin img{
+    margin: -2px;
+}
+.lucky77{
+    justify-content: center;
+}
+/*--------------------- section sale------------------------- */
+.sale-limited{
+    width: 550px;
+    background-color: #FBF3E6;
+    border-radius: 10px;
+
+}
+.sale-limited img{
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+}
+.sale-limited-top{
+    padding: 10px 20px;
+    justify-content: center;
+}
+.sale-limited-top img{
+    margin: 0 auto;
+    width: 90%;
+    border-radius: 0%;
+}
+.saleproduct-title{
+    padding-top: 10px;
+    text-align: center;
+}
+.saleproduct-money{
+    padding-top: 10px;
+    text-align: center;
+    color: #D62872;
+}
+.saleproduct-money::before{
+    content: '88折';
+    border: 1px solid #D62872;
+    margin-right: 10px;
+}
+.saleproduct-money::after{
+    content: '2345';
+    font-weight: bolder;
+    font-size: 20px;
+}
+.bigsale-right{
+    width: 650px;
+    margin-left: 10px;
+
+}
+.sale-hour24{
+    border-radius: 10px;
+    width: 650px;
+    background-color: #F9F0F4;
+}
+.sale24hourimg img{
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+}
+.sale24block{
+    /* margin: 0 auto; */
+    padding: 10px 30px;
+}
+.sale24hour-top img{
+    width: 47.9%;
+    margin: 5px;
+}
+.hottheme{
+    /* display: flex; */
+    justify-content: space-between;
+    border-radius: 10px;
+    background-color: #eee;
+    width: 100%;
+    margin-top: 10px;
+
+}
+.hottheme img{
+    border-radius: 10px 10px 0 0;
+    /* background-color: #eee; */
+    width: 100%;
+}
+.hottheme-product img{
+    /* justify-content: center; */
+    border-radius: 0;
+    width: 108px;
+}
+.hottheme-product{
+    position: relative;
+    padding:  0 40px 20px 40px;
+    /* background-color: #dea; */
+    justify-content: space-between;
+    width: 100%;
+    border-radius: 0;
+}
+.hottheme-product div::before{
+    font-size: 13px;
+    line-height: 20px;
+    position: absolute;
+    width: 108px;
+    height: 20px;
+    background-color: rgba(0,0,0,.8);
+    color: white;
+    text-align: center;
+    content: '#洗乾淨';
+    bottom: 20px;
+}
+/* --------section fourth----------------- */
+.youlike{
+    position: relative;
+    margin-top: 20px;
+    background: url(./momo購物網_files/bt_0_272_01_e1.jpg);
+    width: 480px;
+    height: 425px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.maybeimg{
+    position: absolute;
+    background: url(./momo購物網_files/bt_0_272_01_e6.png);
+    top: 40px;
+    width: 170px;
+    height: 40px;
+}
+.productcard{
+    text-align: center;
+    background-color: #fff;
+    width: 180px;
+    height: 250px;
+    border-radius: 10px;
+    box-shadow: 10px 10px 20px #aaa;
+    margin: 140px 10px;
+    font-size: 13px;
+    padding: 10px;
+}
+.productimg{
+    margin: 0 auto;
+    width: 160px;
+    height: 160px;
+    background: url(./momo購物網_files/7137203_L.webp);
+    background-position: center center;
+    background-size: cover;
+    
+}
+.everyonebuy{
+    border-radius: 10px;
+    margin-top: 20px;
+    width: 725px;
+    margin-left: 10px;
+    background-color: #ff9180;
+}
+.everyonebuy-title{
+    background: url(./momo購物網_files/bt_0_269_01_e4.png) center/auto 100% no-repeat;
+    width: 100%;
+    height: 55px;
+    border-radius: 10px 10px 0 0;
+
+
+}
+.everyonebuy-content{
+    padding: 20px;
+    padding-top: 0;
+}
+.everyonebuy-card{
+    width: 130px;
+    height: 170px;
+    background-color: #fff;
+    border-radius: 10px;
+    font-size: 13px;
+    text-align: center;
+    margin-right: 10px;
+}
+.everyonebuy-card-img img{
+    width: 110px;
+    margin: 10px;
+}
+.everyonebuy-card-title{
+    height: 13px;
+    overflow: hidden;
+    word-break: break-all;
+}
+.everyonebuy-card-price{
+    margin-top: 5px;
+    text-decoration:line-through;	
+}
+.everyonebuy-card-saleprice{
+    font-size: 20px;
+    color: #D62872;
+    text-decoration: none;
+    font-weight: bold;
+    /* text-align: center; */
+}
+.no1product{
+    margin-top: 10px;
+    margin-left: 10px;
+    width: 725px;
+    height: 165px;
+    background-color: #F8EDF3;
+    border-radius: 10px;
+}
+.no1product-content{
+    width: 680px;
+    justify-content: center;
+}
+.no1product-box{
+    /* width: 84px; */
+    /* height: 135px; */
+    padding: 20px 5px;
+    /* background-color: #caa; */
+}
+.no1product-box img{
+    width: 84px;
+} 
+.no1product-box-love{
+    width: 80px;
+    margin: 0 auto;
+    height: 20px;
+    background-color: #bbb;
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+    line-height: 20px;
+    font-size: 13px;
+}
+.no1product-box .everyonebuy-card-saleprice{
+    width: 100%;
+    text-align: center;
+    margin-top: 5px;
+}
+/* -----section fifth------------------- */
+.fifth{
+    margin-top: 30px;
+}
+.sixth{
+    margin-top: 10px;
+    height: 100px;
+    background-color: #FFE3E7;
+    border-radius: 10px;
+    margin-bottom: 40px;
+}
+.momo8percent-shop{
+    background-color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    margin-left: 10px;
+    /* font-weight: bold; */
+}
+.momo8percent-right-top{
+    width: 1000px;
+    margin-top: 10px;
+    margin-left: 10px;
+    display: flex;
+    /* justify-content: space-between; */
+}
+/* ------------------------------------------ */
+
+.seventh-title{
+    width: 1220px;
+    justify-content: space-between;
+}
+.seventh-menu a{
+    text-decoration: none;
+    color: #000;
+    font-size: 13px;
+    padding:0 10px;
+    border-right: 1px solid black;
+}
+.seventh h4{
+    font-weight: bold;
+    font-size: 20px;
+}
+.seventh-content{
+    margin-top: 5px;
+    border-top: 1px solid #aaa;
+    background-color: #eee;
+    padding: 20px 60px;
+    justify-content: space-between;
+}
+.seventh-content-box{
+    width: 140px;
+    font-size: 13px;
+    text-align: center;
+}
+.seventh-content-box img{
+    width: 100%;
+    margin-bottom: 10px;
+}
+.seventh-content-box p{
+    margin: 5px;
+}
+/* ---------bank------------------------------- */
+.bank-content{
+    width: 1200px;
+    position: relative;
+    overflow: hidden;
+}
+.pre{
+    display: flex;
+    align-items: center;
+}
+.bank-img img{
+    width: 250px;
+    height: 125px;
+}
+.next{
+    position: absolute;
+    z-index: 999;
+    right: 0;
+    top: 30px;
+}
+
+/* ------special----------------------- */
+.special{
+    margin-top: 30px;
+}
+
+.special-left-title{
+    width: 752px;
+    height: 41px;
+    border-bottom: 1px solid #000;
+}
+.special-left-title img{
+     width: 752px;
+    height: 41px;
+}
+.spl-banner img{
+    border-radius: 10px;
+    margin-top: 20px;
+}
+.special-right{
+    width: 430px;
+    margin-left: 40px;
+}
+.spr-member-content{
+    margin-top: 15px;
+}
+.spr-member-title img{
+    width: 100%;
+    height: 40px;
+}
+.spr-member-title{
+    height: 41px;
+    overflow: hidden;
+    border-bottom: 1px solid #000;
+}
+.spr-member-content-box{
+    width: 210px;
+    padding: 10px;
+    /* margin-bottom: 5px; */
+}
+.spr-member-content-box img{
+    border-radius: 5px;
+}
+.spr-member-content-box-text{
+    margin: auto 0;
+    padding-left: 5px;
+}
+.spr-member-content-box-text b{
+    font-weight: bold;
+    /* font-size: 14px; */
+}
+.spr-member-content-box-text p{
+    margin-top: 5px;
+    font-size: 13px;
+    color: gray;
+}
+.bestbrands{
+    margin-top: 10px;
+}
+.bestbrands-title{
+    height: 41px;
+    overflow: hidden;
+    border-bottom: 1px solid #000;
+}
+.bestbrands-content{
+    height: 190px;
+    width: 430px;
+    padding: 16px 30px 13px 30px;
+    background-color: #eee;
+}
+.bestbrands-content-box{
+    width: 110px;
+    margin-left: 10px;
+}
+.bestbrands-content-box img{
+    width: 100%;
+    border-radius: 5px;
+}
+.bestbrands-text{
+    margin-top: 10px;
+    text-align: center;
+    padding: 0;
+    width: 110px;
+}
+/* ------bigblock------ */
+.bigblock{
+    margin-top: 40px;
+    border-top: 3px solid #D62872;
+    border-left: 3px solid #D62872;
+}
+.bigblock-title{
+    position: relative;
+    background-color: #eee;
+    height: 40px;
+}
+.bigblock-title-icon{
+    position: absolute;
+    background-color: #D62872;
+    color: white;
+    font-weight: 600;
+    font-size: 20px;
+    width: 138px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    top: -1px;
+    left: -1px;
+}
+.bigblock-content-menu li{
+    width: 137px;
+    height: 40px;
+    background-color: #f0f0f0;
+    line-height: 40px;
+    text-align: right;
+    font-size: 13px;
+    padding-right: 10px;
+}
+.bigblock-content-menu li:hover{
+    background-color: #FADEE5;
+}

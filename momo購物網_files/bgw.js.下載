@@ -1,0 +1,1897 @@
+var _bgwPoc = new Object;
+var _bgwPocBlr = new Object;
+var _bgwPocGlr = new Object;
+
+_bgwPoc.pagePara=momoj().HashTables();
+_bgwPoc.pagePara.add('/main/Main.jsp','fM("pid")');
+_bgwPoc.pagePara.add('/category/LgrpCategory.jsp','fL("pid,ch")');
+_bgwPoc.pagePara.add('/category/DgrpCategory.jsp','fD("pid,ch")');
+_bgwPoc.pagePara.add('/goods/GoodsDetail.jsp','fG("iid,ch")');
+_bgwPoc.pagePara.add('/servlet/NewCampaignServlet','fT("carts")');
+_bgwPoc.pagePara.add('/order/OrderEnd.jsp','fO("carts,bitem,order")');
+_bgwPoc.pagePara.add('/search/SearchEngine.jsp','fS("pid,kw,sitem")');
+_bgwPoc.pagePara.add('/ajax/SmartService.jsp','xiaoi("pid")'); //小i
+
+_bgwPoc.mode="1"; // 1:bgw, 2:self
+_bgwPoc.func="";
+_bgwPoc.topk = 50; //您可能會喜歡商品數+大家都在買
+_bgwPoc.topk1 = 30; //您可能會喜歡商品數
+_bgwPoc.topk2 = 30; //大家都在買(別人可能逛過)
+_bgwPoc.tabNumYouLike = 2; //您可能會喜歡，tab數。
+_bgwPoc.displayYouLikeTopk = _bgwPoc.tabNumYouLike * 12; //您可能會喜歡顯示數
+_bgwPoc.displayGoodsOfWhoBuy = 12; //別人也買過
+_bgwPoc.displayGoodsOfHistory = 12; //歷程推薦商品及您專屬推薦商品
+_bgwPoc.displayGoodsOfXiaoI = 3; //數位客服
+_bgwPoc.displayGoodsOfSearch = 9; //搜尋
+_bgwPoc.ulPos={fM:["34","-531","-1095"],fD:["0","-765","-1530"],fG:["0","-765","-1530"]};
+_bgwPoc.moveCnt=0;
+_bgwPoc.backupGoods = new Array();
+_bgwPoc.backupCnt = 0;
+_bgwPoc.moreDataNum = 5;//多查點資料，若前台無對應資料可補充。
+
+_bgwPoc.fM=function(p){
+  _bgwPoc.postData.pid="home";
+  _bgwPoc.go();
+};
+_bgwPoc.xiaoi=function(p){
+  _bgwPoc.postData.pid="xiaoi";
+  _bgwPoc.go();
+};
+_bgwPoc.fL=function(p){
+  var l_code=get_form(_bgwPoc.url,"l_code");
+  if(l_code.match(/99900000$/)){
+    _bgwPoc.postData.pid="cat1";
+    l_code=l_code.replace('99900000','00000000');
+  }else{
+    _bgwPoc.postData.pid="cat2";
+  }
+  _bgwPoc.postData.ch=l_code;
+  if(_bgwPoc.postData.ch!=''){
+    if(_bgwPoc.postData.ch.match(/\#/)){
+      _bgwPoc.postData.ch=_bgwPoc.postData.ch.split("#")[0];
+    }
+    _bgwPoc.go();
+  }
+};
+_bgwPoc.fD=function(p){
+  if(momoj('#promo_id').length>0){
+    _bgwPoc.postData.pid="select";
+    _bgwPoc.postData.ch=momoj('#d_code').val();
+  }else{
+    _bgwPoc.postData.pid="cat3";
+    _bgwPoc.postData.ch=get_form(_bgwPoc.url,"d_code");
+  }
+  if(_bgwPoc.postData.ch!=''){
+    if(_bgwPoc.postData.ch.match(/\#/)){
+      _bgwPoc.postData.ch=_bgwPoc.postData.ch.split("#")[0];
+    }
+    _bgwPoc.go();
+  }
+};
+_bgwPoc.fG=function(p){
+  _bgwPoc.postData.iid=get_form(_bgwPoc.url,"i_code");
+  var _d_code_li=momoj('#bt_2_layout_NAV ul li[cateCode^=DC]');
+  if (_d_code_li.length > 0){
+    _bgwPoc.postData.ch=momoj(_d_code_li[0]).attr('cateCode').replace('DC','');
+  }
+  if(_bgwPoc.postData.iid!=''){
+    if(_bgwPoc.postData.iid.match(/\#/)){
+      _bgwPoc.postData.iid=_bgwPoc.postData.iid.split("#")[0];
+    }
+    if(!_bgwPoc.postData.iid.match(/\D/)){
+      _bgwPoc.go();
+    }
+  }
+};
+_bgwPoc.fT=function(p){
+  var _prodDtList=momoj('body').data('cartPrdDtList');
+  var _cartGlist= new Array();
+  if(typeof _prodDtList !='undefined' && _prodDtList.length>0){
+    for(var i=0;i<_prodDtList.length;i++){
+      var _prd=_prodDtList[i];
+      if(_prd.goodsKind=='M' || _prd.goodsKind=='R' || _prd.goodsKind=='GR' || _prd.goodsKind=='O'){
+        //主商品，紅綠配商品，任選商品，才丟出去,goodsCode,goodsLastAmt,1
+        var _promoNoSeq='';
+        if(_prd.promoNo!='' && _prd.promoSeq!=''){
+          _promoNoSeq=_prd.promoNo+_prd.promoSeq;
+          var _grp=-1;
+          for(var j=0;j<_cartGlist.length;j++){
+            if(_cartGlist[j].grpId == _promoNoSeq){
+              _grp=j;
+              break;
+            }
+          }
+          if(_grp==-1){
+            _cartGlist.push({grpId:_promoNoSeq,gd:"",price:0});
+            _grp=_cartGlist.length-1;
+          }
+          _cartGlist[_grp].gd=_cartGlist[j].gd+_prd.goodsCode+",1,";
+          _cartGlist[_grp].price=_cartGlist[j].price/1+_prd.goodsPrice/1;
+
+        }else{
+          _cartGlist.push({grpId:_prd.goodsCode,gd:"",price:_prd.goodsPrice});
+        }
+      }
+    }
+    var _carts='';
+    var _gd='';
+    for(var j=0;j<_cartGlist.length;j++){
+      _carts=_carts+_cartGlist[j].grpId+","+_cartGlist[j].price+",1,";
+      if(_cartGlist[j].gd!=''){
+        _cartGlist[j].gd=_cartGlist[j].gd.replace(/,$/,'');
+        _gd=_gd+_cartGlist[j].grpId+","+_cartGlist[j].gd+"|";
+      }
+    }
+
+    _bgwPoc.postData.carts=_carts.replace(/,$/,'');
+    _bgwPoc.postData.gd=_gd.replace(/\|$/,'');
+    _bgwPoc.go();
+  }
+};
+_bgwPoc.fO=function(p){
+  _bgwPoc.postData.pid="buy";
+  _bgwPoc.postData.order=momoj('.OrderNo').html();
+  _bgwPoc.postData.cc_session=getMwaSessionInfo('_mwa_uniSessionInfo');  //momoj().cookie('ccsession')
+  _bgwPoc.postData.cc_guid=getMwaSessionInfo('_mwa_uniVisitorInfo');  //momoj().cookie('ccguid')
+
+  var _cartGlist= new Array();
+  var _prodDtList=dataU;
+  if(typeof _prodDtList !='undefined' && _prodDtList.length>0){
+    for(var i=0;i<_prodDtList.length;i++){
+      var _prd=_prodDtList[i];
+      if(_prd.goodsKind=='M' || _prd.goodsKind=='R' || _prd.goodsKind=='GR' || _prd.goodsKind=='O'){
+        //主商品，紅綠配商品，任選商品，才丟出去,goodsCode,goodsLastAmt,1
+        var _promoNoSeq='';
+        if(_prd.promoId!='' && _prd.promoSeq!=''){
+          _promoNoSeq=_prd.promoId+_prd.promoSeq;
+          var _grp=-1;
+          for(var j=0;j<_cartGlist.length;j++){
+            if(_cartGlist[j].grpId == _promoNoSeq){
+              _grp=j;
+              break;
+            }
+          }
+          if(_grp==-1){
+            _cartGlist.push({grpId:_promoNoSeq,gd:"",price:0});
+            _grp=_cartGlist.length-1;
+          }
+          _cartGlist[_grp].gd=_cartGlist[j].gd+_prd.goodsCode+",1,";
+          _cartGlist[_grp].price=_cartGlist[j].price/1+_prd.goodsPrice/1;
+
+        }else{
+          _cartGlist.push({grpId:_prd.goodsCode,gd:"",price:_prd.goodsPrice});
+        }
+      }
+    }
+    var _carts='';
+    var _gd='';
+    for(var j=0;j<_cartGlist.length;j++){
+      _carts=_carts+_cartGlist[j].grpId+","+_cartGlist[j].price+",1,";
+      if(_cartGlist[j].gd!=''){
+        _cartGlist[j].gd=_cartGlist[j].gd.replace(/,$/,'');
+        _gd=_gd+_cartGlist[j].grpId+","+_cartGlist[j].gd+"|";
+      }
+    }
+    _bgwPoc.postData.bitem=_carts.replace(/,$/,'');
+    _bgwPoc.postData.gd=_gd.replace(/\|$/,'');
+    if(_bgwPoc.postData.order!=''){
+      if(_bgwPoc.postData.order.match(/tel/)){
+        try{
+          _bgwPoc.postData.order=_bgwPoc.postData.order.match(/(.*)(tel)(.*)>(.*)<(.*)/)[4];
+        }catch(err){
+        }
+      }
+      _bgwPoc.go();
+    }
+  }
+
+};
+_bgwPoc.fS=function(p){
+  _bgwPoc.postData.pid="search";
+  _bgwPoc.postData.kw=momoj('#research_keyword').text();
+  var _prdList=momoj('body').data('kwResult');
+  if(typeof _prdList !='undefined' && _prdList.length>0){
+    var _sitem="";
+    for(var i=0;i<_prdList.length;i++){
+      var _prd=_prdList[i];
+      _sitem=_sitem+_prd.GOODS_CODE+",";
+    }
+    _bgwPoc.postData.sitem=_sitem.replace(/,$/,"");
+  }
+  _bgwPoc.go();
+};
+_bgwPoc.doPost=function(){
+  var _mode=3;
+  _bgwPoc.mode=_mode;
+  _bgwPoc.postData={"mid":57,"uid":"",mode:_bgwPoc.mode};
+
+  var _user=momoj().cookie("ccmedia");
+
+  if(!(_user =='null' || _user ==null)){
+    _user=_user.split('_/')[0];
+    _user=_user.replace('"','');
+    _bgwPoc.postData.uid=_user;
+  }
+  //取出頁面的網址
+  _bgwPoc.url=window.location.href;
+  try{
+    _bgwPoc.script=_bgwPoc.url.split('?')[0];
+    _bgwPoc.script="/"+_bgwPoc.script.split('/')[3]+"/"+_bgwPoc.script.split('/')[4];
+  }catch(err){
+
+  }
+  if(typeof _bgwPoc.script=='string'
+     && _bgwPoc.pagePara.get(_bgwPoc.script) !='undefined'){
+    try{
+      _bgwPoc.func=_bgwPoc.pagePara.get(_bgwPoc.script).split('(')[0];
+      eval('_bgwPoc.'+_bgwPoc.pagePara.get(_bgwPoc.script));
+    }catch(err){
+
+    }
+  }
+
+  if(_bgwPoc.mode==3){
+    _bgwPoc.postData.layout="none";
+    _bgwPoc.postData.success="";
+  }else if(_bgwPoc.mode==1){
+    if(_bgwPoc.func=='fM' || _bgwPoc.func=='fD' || _bgwPoc.func=='fG'){
+      _bgwPoc.postData.layout="js";
+      _bgwPoc.postData.success=_bgwPoc.showBgw;
+    } else {
+      _bgwPoc.postData.layout="none";
+      _bgwPoc.postData.success="";
+    }
+  }else if(_bgwPoc.mode==2){
+    _bgwPoc.postData.layout="none";
+    _bgwPoc.postData.success="";
+  }
+};
+
+_bgwPoc.go=function(){
+  if(_bgwPoc.mode==3){
+    if(_bgwPoc.func=='fT' || _bgwPoc.func=='fO'){
+      var _web=momoj().cookie('JSESSIONID');
+      if(!(_web =='null' || _web ==null)){
+        _web=_web.substring(_web.length-2);
+      }
+      var _itriData={
+        web:_web,
+        cc_session:getMwaSessionInfo('_mwa_uniSessionInfo'),
+        cc_guid:getMwaSessionInfo('_mwa_uniVisitorInfo'),
+        gd:_bgwPoc.postData.gd,
+        uid:_bgwPoc.postData.uid
+      };
+      var _url='';
+      if(_bgwPoc.func=='fT'){
+        _itriData.carts=_bgwPoc.postData.carts;
+        _url='LogShoppingCar';
+      }else if(_bgwPoc.func=='fO'){
+        _itriData.bitem=_bgwPoc.postData.bitem;
+        _itriData.order=_bgwPoc.postData.order;
+        _url='LogOrder';
+      }
+      try{
+        momoj.ajax({
+          url:'/itri/api/log/'+_url,
+          type:'GET',
+          data:{object:JSON.stringify(_itriData)},
+          dataType:'json'
+        });
+      }catch(err){
+        //nothing
+      }
+    }
+  }
+
+  if(_bgwPoc.mode==2 || _bgwPoc.mode==3){
+    _bgwPoc.showBgw();
+  }
+};
+
+_bgwPoc.showBgw=function(){
+  if(!(_bgwPoc.func == 'fM' || _bgwPoc.func == 'fD' 
+        || _bgwPoc.func == 'fG' || _bgwPoc.func == 'xiaoi'
+        || _bgwPoc.func == 'fL' || _bgwPoc.func == 'searchShop')) {
+    return;
+  }
+
+  var _htmlCss = new Array();
+  var _p1 = new Array();
+  var _p2 = new Array();  //add by Jinni 2014.12.16
+  var _block = 'bgw';
+
+  if (_bgwPoc.func == 'fD' || _bgwPoc.func == 'fL') {
+    //小分類頁css
+    _htmlCss=['<style>',
+            '#recGoods .TabMenu {height:28px; position:absolute; top:0px; right:0px}',
+            '#recGoods .TabMenu .tabMenu_number {display:inline-block; margin:0px; padding:0px; height:28px; list-style:none}',
+            '#recGoods .TabMenu .tabMenu_number li {margin:0px; padding:0px; float:left; width:35px; text-align:center;}',
+            '#recGoods .TabMenu .tabMenu_number li a {display:inline-block; margin:0px; padding:0px; width:35px; font:15px/28px Helvetica; color:#585858;',
+            'cursor:pointer; floatt:left}',
+            '#recGoods .TabMenu .tabMenu_number li a b {display:inline-block; margin:9px 0px; padding:0px; width:1px; height:10px; background-color:#cccccc; float:left}',
+            '#recGoods .TabMenu .tabMenu_number li:first-child a b {display:none}',
+            '#recGoods .TabMenu .tabMenu_number li.selected a {height:28px; background:#3e7ff5; color:#ffffff}',
+            '#recGoods .TabMenu .tabMenu_number li a:hover {height:28px; background:#3e7ff5; color:#ffffff}',
+            '#recGoods .TabContent .TabContentD {display:none; width:1000px; height:310px}',
+            '#recGoods .TabContent .selected {display:block;}',
+            '#recGoods .TabContent .TabContentD ul {margin:0px; padding:0px; list-style:none; display:inline-block}',
+            '#recGoods .TabContent .TabContentD ul li {float:left; padding:20px 15px; width:220px; height:270px; text-align:center; position: relative}',
+            '#recGoods .TabContent .TabContentD ul li a {display:block; padding:0px 10px; width:200px; height:auto;}',
+            '#recGoods .TabContent .TabContentD ul li a img.goodsImg {display:inline-block; border:0px; vertical-align:top; width:200px; height:200px;}',
+            '#recGoods .TabContent .TabContentD ul li p {margin:5px 0px 0px 0px; padding:0px; width:200px}',
+            '#recGoods .TabContent .TabContentD ul li p span {display:block; overflow:hidden; color:#696969}',
+            '#recGoods .TabContent .TabContentD ul li p .prdName {height:32px; font:13px/16px Helvetica; margin:0px 0px 7px 0px}',
+            '#recGoods .TabContent .TabContentD ul li p .prdPrice {font:bold 12px/26px Helvetica; height:26px; color:#d62672; text-align:center }',
+            '#recGoods .TabContent .TabContentD ul li p .prdPrice b {display:inline-block; font:24px/26px Century Gothic; margin-left:2px; letter-spacing:-1px}',
+            '#recGoods .TabContent .TabContentD ul li p .prdPrice img { display:inline-block; border:0px; margin-right:5px; width:auto; height:auto; position:relative; top:3px}',
+            '#recGoods .TabContent .TabContentD ul li a:hover .prdName {color:#e40480}','</style>'];
+  } else if(_bgwPoc.func === 'xiaoi') {
+    _htmlCss = ['<style>',
+            '#bt_xiaoi {float:left; width:320px; border:0px}',
+            '#bt_xiaoi ul {margin:0px; padding:0px; list-style:none; display:block; z-index:1; }',
+            '#bt_xiaoi ul li a {width:auto; height:auto; padding:0px}',
+            '#bt_xiaoi ul li {margin:0px; padding:0px; list-style:none;border-left:0px}',
+            '#bt_xiaoi ul li {float:left; width:100px; height: 122px; text-align:center; margin:10px 0px 10px 10px; padding:0px}',
+            '#bt_xiaoi ul li a img {width:38px; vertical-align:top; position:inherit}',
+            '#bt_xiaoi ul li a img:first-child {width:80px; vertical-align:middle}',
+            '#bt_xiaoi ul li a span {display:block; width:100px;height:18px; font:13px/18px Helvetica; color:#696969; margin:0px; padding:0px; overflow:hidden}',
+            '#bt_xiaoi ul li a b {font:16px/20px Century Gothic; color:#D62672; letter-spacing:-1px; display:inline-block;}',
+            '#bt_xiaoi ul li:first-child {margin:10px 0px}',
+            '</style>'
+    ];
+  }
+
+  if(_bgwPoc.mode == 3) {
+    _block = 'itri';
+
+    try {
+      var rec_pos1 = '';
+      var rec_pos2 = '';
+      var _gid = (typeof _bgwPoc.postData.iid =='undefined') ? '' : _bgwPoc.postData.iid;
+      var _categ_code = (typeof _bgwPoc.postData.ch =='undefined') ? '' : _bgwPoc.postData.ch;
+
+      var _itriData = {
+          gid: _gid,
+          uid: _bgwPoc.postData.uid,
+          page_type: '',  //{1:portal, 2:category page, 3:goods page}
+          rec_pos: '',
+          device: 'pc',
+          rec_type: '',//clickStream,AlsoView,Group
+          b_categ_info: [{ "code":"bgoods_r18" }], //18禁黑名單
+          token: 'NVHlz4elol',
+          categ_code: _categ_code,
+          topk: 0 //number of response goods code
+      };
+
+      //跟itri要求資料
+      if(_bgwPoc.func == 'fM') {
+        _bgwPoc.topk = _bgwPoc.topk1 + _bgwPoc.topk2;
+        
+        _itriData.rec_type= 'ClickStream';
+        
+        _itriData.topk = _bgwPoc.topk1;
+        _itriData.rec_pos = 'p';
+        rec_pos1 = _itriData.rec_pos;
+        set_itriData_f_categ_info(_itriData);
+        _p1 = getRankFromHermes(_itriData);//你可能會喜歡
+        
+        _itriData.topk = _bgwPoc.topk2;
+        _itriData.rec_pos = 'p2';
+        rec_pos2 = _itriData.rec_pos;
+        delete _itriData['f_categ_info'];
+        _p2 = getRankFromHermes(_itriData);//大家都買過（別人也逛過）
+
+      }else if(_bgwPoc.func == 'xiaoi') {
+        _bgwPoc.topk = _bgwPoc.displayGoodsOfXiaoI;
+        
+        _itriData.topk = _bgwPoc.topk + _bgwPoc.moreDataNum;
+        _itriData.rec_pos = 'mocs';
+        rec_pos1 = _itriData.rec_pos;
+        _itriData.rec_type = 'ClickStream';
+        _p1 = getRankFromHermes(_itriData);//數位客服 你可能會喜歡
+
+      }else if(_bgwPoc.func == 'searchShop') {
+        _bgwPoc.topk = _bgwPoc.displayGoodsOfSearch;
+        
+        _itriData.topk = _bgwPoc.topk + _bgwPoc.moreDataNum;
+        _itriData.rec_pos = 'sr';
+        rec_pos1 = _itriData.rec_pos;
+        _itriData.rec_type = 'ClickStream';
+        _p1 = getRankFromHermes(_itriData);//搜尋 你可能會喜歡
+
+      }else { //fD 及 fG
+        delete _itriData['b_categ_info'];
+
+        if(_bgwPoc.func == 'fD'){
+          _bgwPoc.topk = _bgwPoc.displayGoodsOfHistory;
+
+          _itriData.topk = _bgwPoc.topk + _bgwPoc.moreDataNum;
+          _itriData['w_categ_info'] = [{'code':_categ_code}];
+          _itriData.gid = '';
+          _itriData.rec_pos = 'cap_p0';
+          rec_pos1 = _itriData.rec_pos;
+          _itriData.rec_type = 'ClickStream';
+          _p1 = getRankFromHermes(_itriData);//中分類頁 您專屬推薦商品
+
+        }else if (_bgwPoc.func == 'fG') {
+          if(!/^#(info|spec|gifts)$/.test(location.hash)){
+            _bgwPoc.topk = _bgwPoc.displayGoodsOfWhoBuy;
+
+            _itriData.topk = _bgwPoc.topk + _bgwPoc.moreDataNum;
+            _itriData.rec_pos = 'gop_cs';
+            rec_pos1 = _itriData.rec_pos;
+            _itriData.rec_type = 'ClickStream';
+            var arrB_categ_info = new Array();
+            arrB_categ_info.push({"code":"bgoods_r18"});
+            arrB_categ_info.push({"code":_categ_code});
+            _itriData.b_categ_info = arrB_categ_info;
+            _p1 = getRankFromHermes(_itriData);//商品頁 猜你喜歡
+            
+            delete _itriData['b_categ_info'];
+            _itriData.rec_pos = 'gop_av';
+            rec_pos2 = _itriData.rec_pos;
+            _itriData.rec_type = 'AlsoView';
+            _p2 = getRankFromHermes(_itriData);//商品頁 別人逛過
+          }
+
+        }else if(_bgwPoc.func == 'fL'){
+          _bgwPoc.topk = _bgwPoc.displayGoodsOfHistory;
+
+          _itriData.topk = _bgwPoc.topk + _bgwPoc.moreDataNum;
+          _itriData['w_categ_info'] = [{'code':_categ_code}];
+          _itriData.gid = '';
+          _itriData.rec_pos = 'cap_p2';
+          _itriData.rec_type = 'ClickStream';
+          if(_categ_code.substr(2) == '00000000'){
+            _itriData.rec_pos= 'cap_p3';
+          }
+          rec_pos1 = _itriData.rec_pos;
+          _p1 = getRankFromHermes(_itriData);//大分類頁 您專屬推薦商品
+
+        }
+      }
+    } catch(err) {
+    }
+
+  }
+
+  //對象
+  var _bObj = null;
+  if(_bgwPoc.func == 'fD') {//分類頁
+    if (momoj('#prdlistArea').length == 1) {
+      _bObj = momoj('#Dgrp_BodyBigTableBase .bt_2_layout_b1');
+    }else if (momoj('#Dgrp_rightExtend').length > 0) {
+      _bObj = momoj('#Dgrp_rightExtend');
+    }else{
+      _bObj = momoj('#Dgrp_LCatRightPBase');
+    }
+
+  } else if(_bgwPoc.func == 'fL') {//分類頁
+    _bObj = momoj('#bt_2_layout_b1');
+
+  } else if (_bgwPoc.func == 'fG') {//商品頁
+    _bObj = momoj('#productForm .prdwarp');
+
+  } else if(_bgwPoc.func == 'fM') {//首頁
+    _bObj = momoj('#bt_0_272_01 .boxcontent ul');
+    
+  } else if(_bgwPoc.func == 'xiaoi') {//數位客服
+    _bObj = momoj('#bt_xiaoi');
+
+  } else if(_bgwPoc.func == 'searchShop') {//搜尋頁
+    _bObj = momoj('#bt_0_layout_b268');
+
+  }
+
+  //備用資料
+   if(_bgwPoc.func == 'fM') {
+    if (_p1.length + _p2.length < _bgwPoc.topk) {
+      _block = 'momo';
+      _p1 = _bgwPoc.getBuyData();
+      
+      _p2 = new Array();
+      momoj.each(_p1, function(index, element){
+        _p2[index] = element;
+      });
+    }
+    
+    var diliveryNum = Math.min(_p1.length - _p1.length%_bgwPoc.tabNumYouLike, _bgwPoc.displayYouLikeTopk);
+    var tempArray = new Array();
+    momoj.each(_p1, function(index, element){
+      if(index < diliveryNum){
+        tempArray[index] = element;
+      }
+    });
+    _p1 = tempArray;
+    
+    _bgwPoc.topk = _p1.length + _p2.length;
+
+  } else if(_bgwPoc.func == 'xiaoi' || _bgwPoc.func == 'searchShop') {
+    if (_p1.length < _bgwPoc.topk) {
+      _block = 'momo';
+      _p1 = _bgwPoc.getBuyData();
+    }
+
+  } else if(_bgwPoc.mode==1) {
+    _p1 = window.scupioec.rec[window.scupioec.rec.length-1].data;
+
+  } else if(_bgwPoc.mode==2) {
+    _block = 'momo';
+    _p1 = _bgwPoc.getBuyData();
+    _bgwPoc.topk = _p1.length;
+
+  }
+
+   momoj.each(_p1, function(index, element){
+    element.rec_pos = rec_pos1;
+  });
+
+   momoj.each(_p2, function(index, element){
+    element.rec_pos = rec_pos2;
+  });
+
+  if(_bObj.length == 1){
+    if(_bgwPoc.func == 'fM') {//首頁您可能會喜歡
+      if(_p1.length + _p2.length >= _bgwPoc.topk) {
+        //你可能會喜歡區塊
+        insertGoodsToHtmlForMainPage(_bObj, _p1, _block, {type:1});
+        
+        //every Body Buy區塊
+        var _ebObj = momoj('#bt_0_269_01 ul');
+        insertGoodsToHtmlForMainPage(_ebObj, _p2, _block, {type:2});
+        
+        //你可能會喜歡的浮層
+        var _bObjDiv = momoj('#bt_0_272_01 .boxcontent').after('<div id="bt_0_268_sub" style="display:none;"></div>');
+        
+        _bgwPoc.slideInit('bt_0_272_01 .boxcontent', 180, _bgwPoc.tabNumYouLike, Math.min(_p1.length, _bgwPoc.displayYouLikeTopk), 15, 'mlr');//_p1 的數量一定可以被 _bgwPoc.tabNumYouLike 整除
+        momoj('#bt_0_269_01').showBtByArrow({showBtNum:5});
+      }
+      
+    } else if(_bgwPoc.func == 'fG') {//fG 商品頁
+      _bgwPoc.process1(_bObj, _p2, _htmlCss, _block, 2);
+      _bgwPoc.process1(_bObj, _p1, _htmlCss, _block, 1);
+  
+    } else if(_bgwPoc.func == 'fD' || _bgwPoc.func == 'fL') {//fD 小分類頁 or fL 大分類頁
+      _bgwPoc.process1(_bObj, _p1, _htmlCss, _block, 3);
+  
+    } else if(_bgwPoc.func == 'xiaoi' || _bgwPoc.func == 'searchShop') {//數位客服 or 搜尋頁
+      _bgwPoc.process2(_bObj, _p1, _htmlCss, _block);
+  
+    }
+  }
+
+  var banDiv=momoj('#bt_0_257_01 ul');
+  if(banDiv.length > 0){
+    getHtmlContent('bt_7_514_01');//銀行好康
+  }
+  var goodth=momoj('#bt_0_261_01 ul');
+  if(goodth.length > 0){
+    getHtmlContent('bt_7_511_02');//好物開箱
+  }
+};
+
+/*
+ * 好物開箱,銀行好康
+ * 取得靜態檔的html content
+ */
+function getHtmlContent(htmlCode){
+  momoj.ajaxTool({
+    async: true,
+    data:{flag: 2033 ,htmlCode: htmlCode},
+    ajaxSuccess:function(_rtnObj) {
+      var htmlContent = _rtnObj.rtnData.result;
+      if(htmlCode =='bt_7_514_01'){
+        momoj('#bt_0_257_01 ul').wrap('<div class="boxcontentinner"></div>');
+        var Obj=momoj('#bt_0_257_01 ul');
+        Obj.append(htmlContent);
+        _bgwPoc.slideInit('bt_0_257_01', 250, 4, 12, 6, 'blr');
+      }else if(htmlCode =='bt_7_511_02'){
+        momoj('#bt_0_261_01 ul').wrap('<div class="boxcontentinner"></div>');
+        var Obj=momoj('#bt_0_261_01 ul');
+        Obj.append(htmlContent);
+        momoj('#bt_0_261_01 .playArea').addClass('openvideoBtn');
+        momoj('#bt_0_261_01 .mobileDisplayVideo').addClass('videoUrl');
+        momoj('#bt_0_261_01').ShowVideoFun();
+        _bgwPoc.slideInit('bt_0_261_01', 240, 4, 8, 20,  'glr');
+
+      }
+    }
+  });
+}
+
+//左右卷軸移動初始
+_bgwPoc.slideInit=function(moveObj, liWidth, numberOfGoodsInSingleTab, topk, dist, slideNm){
+
+  if(topk > numberOfGoodsInSingleTab) {
+    _bObj=momoj('#'+moveObj+' ul');
+    var num = momoj('#'+moveObj+' ul li').length;//總共有幾品
+    var modnum = parseInt(num/numberOfGoodsInSingleTab);//一定要被numberOfGoodsInSingleTab整除，不然動畫會有點問題。
+    //_bObj.parent().find("h3").css({"z-index":"2"});
+    var _liWidth = liWidth+dist; //每一品li的寬度+間距
+    _bObj.css({width:(_liWidth*num) + "px"});
+    _bgwPoc.moveInit({
+        moveObj: "#"+moveObj+" ul",
+        movePx: (_liWidth*numberOfGoodsInSingleTab), //每一次移動的寬度 390
+        minLeft: 0,
+        minLeftPos:-(_liWidth*num) + "px", //-4875 --> -(195*25)
+        maxLeft: -((_liWidth*num) - ((1 - ((num/numberOfGoodsInSingleTab) - modnum)) * (_liWidth*numberOfGoodsInSingleTab))),
+        maxLeftPos:((1 - ((num/numberOfGoodsInSingleTab) - modnum))* (_liWidth*numberOfGoodsInSingleTab)) + "px",
+        //(1-((25/2) - 12))*(195*2)) = 195
+        name : slideNm
+    });
+    if(slideNm =='mlr'){
+      setSliderMoveDirEvent(moveObj, slideNm, _bgwPoc.slider);
+    }else if( slideNm =='blr'){
+      setSliderMoveDirEventBlr(moveObj, slideNm, _bgwPoc.slider);
+    }else if( slideNm =='glr'){
+      setSliderMoveDirEventGlr(moveObj, slideNm, _bgwPoc.slider);
+    }
+  }else{
+    momoj('#'+moveObj).undelegate('.'+slideNm, 'click');
+  }
+}
+
+_bgwPoc.postRec=function(_block,_data){/* 2021.05 moapi API關閉，故刪除*/};
+_bgwPoc.recLog=function(_self,e){/* 2021.05 moapi API關閉，故刪除*/};
+
+_bgwPoc.getBuyData=function(){
+  if (typeof _buyData == 'undefined') {
+    momoj.ajax({
+    url: '/ecm/js/whoBuyData.js?_=' + getTimeStampMinutesRange(2),
+    type: 'GET',
+    dataType: 'script',
+    async: false,
+    timeout: 3
+    });
+  }
+  
+  var _rtnData=new Array();
+  
+  if(_buyData && _buyData.length>5){
+    var useLength = Math.min(_buyData.length,50);
+    
+    for(var i=0;i<useLength;i++){
+      var _goodsCode=_bgwPoc.uni2stc(_buyData[i].goodsCode);
+      var _goodsName=_bgwPoc.uni2stc(_buyData[i].prdNme);
+      if(_goodsCode==''){
+        continue;
+      }
+
+      _rtnData[i]={
+        itemid:_goodsCode,
+        goodsName:_goodsName,
+        clickurl:'/goods/GoodsDetail.jsp?i_code='+_goodsCode,
+        imgurl:getGoodsImgUrl(_goodsCode,'1','000'),
+        title:_goodsName
+      };
+    }
+  }
+
+  return _rtnData;
+};
+
+_bgwPoc.uni2stc=function(_unicode){
+  if(typeof _unicode!='string') return '';
+  var _str='';
+  var _strA=_unicode.split(';');
+  for(var i=0;i<_strA.length;i++){
+    if(_strA[i].match(/^&#/)){
+      var _uni=_strA[i].replace('&#','');
+      try{
+        _uni=String.fromCharCode(_uni);
+      }catch(err){
+        _uni='';
+      }
+      _str=_str+_uni;
+    }
+  }
+  return _str;
+};
+_bgwPoc.commafy=function(num){
+  num = num+"";
+  try{
+    var re=/(-?\d+)(\d{3})/;
+    while(re.test(num)){
+      num=num.replace(re,"$1,$2");
+    }
+  }catch(err){
+  }
+  return num;
+};
+//左右移動卷軸初始化
+_bgwPoc.moveInit=function(settings){
+  var _defaultSettings={
+    moveObj:"",
+    movePx:0,
+    minLeft:0,
+    minLeftPos:"0px",
+    minLeftPos1: "0px",
+    maxLeft:0,
+    maxLeft1: 0,
+    maxLeft2:0,
+    maxLeftPost:"0px",
+    name:""
+
+  };
+
+  if(settings.name == 'mlr'){
+    _bgwPoc.moveSettings=momoj.extend(_defaultSettings, settings);
+    var _obj=momoj(_bgwPoc.moveSettings.moveObj).clone();
+    momoj(_bgwPoc.moveSettings.moveObj).before(_obj);
+    momoj(_bgwPoc.moveSettings.moveObj).eq(0).css({left:_bgwPoc.moveSettings.minLeftPos});
+    momoj(_bgwPoc.moveSettings.moveObj).eq(1).css({left:'0px'});
+  }else if(settings.name == 'blr'){
+    _bgwPocBlr.moveSettings=momoj.extend(_defaultSettings, settings);
+     var _obj=momoj(_bgwPocBlr.moveSettings.moveObj).clone();
+    momoj(_bgwPocBlr.moveSettings.moveObj).before(_obj);
+    momoj(_bgwPocBlr.moveSettings.moveObj).eq(0).css({left:_bgwPocBlr.moveSettings.minLeftPos});
+    momoj(_bgwPocBlr.moveSettings.moveObj).eq(1).css({left:'0px'});
+  }else if(settings.name == 'glr'){
+    _bgwPocGlr.moveSettings=momoj.extend(_defaultSettings, settings);
+    var _obj=momoj(_bgwPocGlr.moveSettings.moveObj).clone();
+    momoj(_bgwPocGlr.moveSettings.moveObj).before(_obj);
+    momoj(_bgwPocGlr.moveSettings.moveObj).eq(0).css({left:_bgwPocGlr.moveSettings.minLeftPos});
+    momoj(_bgwPocGlr.moveSettings.moveObj).eq(1).css({left:'0px'});
+  }
+
+};
+//左右移動卷軸
+_bgwPoc.slider=function(settings){
+  if(_bgwPoc.moveCnt>0){
+      return false;
+  }
+  _bgwPoc.moveCnt++;
+  var _settings= null;
+  if(settings.name == 'mlr'){
+    var _defaultSettings={//你可能會喜歡
+      moveWay:"L",// L or R
+      movePx:_bgwPoc.moveSettings.movePx,
+      moveObj:momoj(_bgwPoc.moveSettings.moveObj),
+      minL:_bgwPoc.moveSettings.minLeft,
+      minLP:_bgwPoc.moveSettings.minLeftPos,
+      minLP1:_bgwPoc.moveSettings.minLeftPos1,
+      minLP2:_bgwPoc.moveSettings.minLeftPos2,
+      maxL:_bgwPoc.moveSettings.maxLeft,
+      maxL1:_bgwPoc.moveSettings.maxLeft1,
+      maxL2:_bgwPoc.moveSettings.maxLeft2,
+      maxLP:_bgwPoc.moveSettings.maxLeftPos
+    };
+    _settings = momoj.extend(_defaultSettings, settings);
+  }else if(settings.name == 'blr'){
+    var _defaultSettingsBlr={//銀行好康
+      moveWay:"L",// L or R
+      movePx:_bgwPocBlr.moveSettings.movePx,
+      moveObj:momoj(_bgwPocBlr.moveSettings.moveObj),
+      minL:_bgwPocBlr.moveSettings.minLeft,
+      minLP:_bgwPocBlr.moveSettings.minLeftPos,
+      minLP1:_bgwPocBlr.moveSettings.minLeftPos1,
+      minLP2:_bgwPocBlr.moveSettings.minLeftPos2,
+      maxL:_bgwPocBlr.moveSettings.maxLeft,
+      maxL1:_bgwPocBlr.moveSettings.maxLeft1,
+      maxL2:_bgwPocBlr.moveSettings.maxLeft2,
+      maxLP:_bgwPocBlr.moveSettings.maxLeftPos
+    };
+    _settings = momoj.extend(_defaultSettingsBlr, settings);
+  }else if(settings.name == 'glr'){
+    var _defaultSettingsGlr={//好物開箱
+    moveWay:"L",// L or R
+    movePx:_bgwPocGlr.moveSettings.movePx,
+    moveObj:momoj(_bgwPocGlr.moveSettings.moveObj),
+    minL:_bgwPocGlr.moveSettings.minLeft,
+    minLP:_bgwPocGlr.moveSettings.minLeftPos,
+    minLP1:_bgwPocGlr.moveSettings.minLeftPos1,
+    minLP2:_bgwPocGlr.moveSettings.minLeftPos2,
+    maxL:_bgwPocGlr.moveSettings.maxLeft,
+    maxL1:_bgwPocGlr.moveSettings.maxLeft1,
+    maxL2:_bgwPocGlr.moveSettings.maxLeft2,
+    maxLP:_bgwPocGlr.moveSettings.maxLeftPos
+    };
+    _settings = momoj.extend(_defaultSettingsGlr, settings);
+  }
+
+  if(_settings.moveWay=='L'){
+    _settings.changePx='-='+_settings.movePx;
+  }else{
+    _settings.changePx='+='+_settings.movePx;
+  }
+  var _moveObj=_settings.moveObj;
+  _moveObj.animate({left:_settings.changePx},_settings.movePx,function(){
+    _bgwPoc.moveCnt++;
+    if(_bgwPoc.moveCnt==3){
+
+      _bgwPoc.moveCnt=0;
+      
+      var moveObjLeft0 = Math.round(_moveObj.eq(0).position().left);
+      var moveObjLeft1 = Math.round(_moveObj.eq(1).position().left);
+      if (moveObjLeft0 == _settings.minL) {
+        _moveObj.eq(1).css({left:_settings.minLP});
+      } else if (moveObjLeft1 == _settings.minL) {
+        _moveObj.eq(0).css({left:_settings.minLP});
+      } else if (moveObjLeft0 == _settings.maxL) {//左移到快到最後時的上一個位置
+        _moveObj.eq(1).css({left:_settings.maxLP});
+      } else if (moveObjLeft1 == _settings.maxL) {//右移到快到最後時的上一個位置
+        _moveObj.eq(0).css({left:_settings.maxLP});//區塊往回貼上的位置
+      }
+    }
+  });
+};
+
+/**從工研院取得資料
+ * itriDataObject 工研院api需要的資料物件
+ * return itriData工研院給予的資料
+ */
+var getGoodsRankFromItri = function (itriDataObject) {
+  var itriData = new Array();
+
+  //品牌旗艦館沒有推薦板塊
+  var isBrand = itriDataObject.categ_code.indexOf('21') == 0 ? true : false;
+
+  if(!isBrand){
+    momoj.ajax({
+      url: '/itri/api/recomd/GetGoodsRanks?_=' + new Date().getTime(),
+      type: 'GET',
+      data: itriDataObject,
+      async: false,
+      timeout: 3,
+      success: function(_data) {
+
+        if(typeof _data.recomd_list=='undefined' || _data.recomd_list.length < 1) {
+          return false;
+        }
+
+        _bgwPoc.recomd_id = _data.recomd_id;
+
+        sendRecommendId(_bgwPoc.recomd_id);
+
+        var recomdLength = _data.recomd_list.length;
+
+        for(var i = 0 ; i < recomdLength; i++) {
+          var _goodsCode = _data.recomd_list[i].id + '';
+          var _goodsName = _data.recomd_list[i].name;
+          var _why = '';
+
+          if(typeof _data.recomd_list[i].why != 'undefined' ||
+            _data.recomd_list[i].why != null || _data.recomd_list[i].why != 'null') {
+            _why=_data.recomd_list[i].why;
+          }
+
+          if(_goodsCode == '') {
+            continue;
+          }
+
+          var array = [];
+          array.push(_data.recomd_list[i]);
+
+          itriData.push({
+            itemid: _goodsCode,
+            goodsName: _goodsName,
+            clickurl: '/goods/GoodsDetail.jsp?i_code=' + _goodsCode,
+            imgurl: getGoodsImgUrl(_goodsCode,'1','000'),
+            title: _goodsName,
+            recomd_id: _bgwPoc.recomd_id,
+            recomd_list: array,
+            why: _why
+          });
+        }
+      }
+    });
+  }
+
+  return itriData;
+};
+
+/**從工研院取得資料
+ * Hermes版 itriDataObject 工研院api需要的資料物件
+ * return itriData工研院給予的資料
+ * 2017.0314
+ */
+var getRankFromHermes = function (itriDataObject) {  
+  var itriData = new Array();
+
+  //品牌旗艦館沒有推薦板塊
+  var isBrand = itriDataObject.categ_code.indexOf('21') == 0 ? true : false;
+
+  if(!isBrand){
+
+    itriDataObject["flag"] = 2037;
+
+    momoj.ajaxTool({
+      async:false,
+      timeout:3000 ,
+      data:itriDataObject ,
+      ajaxSuccess:function(rData){
+        var _data = JSON.parse(rData.rtnData.data);
+        _data = _data ? _data : [];
+
+        if(typeof _data.recomd_list=='undefined' || _data.recomd_list.length < 1) {
+          return false;
+        }
+
+        _bgwPoc.recomd_id = _data.recomd_id;
+
+        sendRecommendId(_bgwPoc.recomd_id);
+
+        var recomdLength = _data.recomd_list.length;
+
+        for(var i = 0 ; i < recomdLength; i++) {
+          var _goodsCode = _data.recomd_list[i].id + '';
+          var _goodsName = _data.recomd_list[i].name;
+          var _why = '';
+
+          if(typeof _data.recomd_list[i].why != 'undefined' ||
+            _data.recomd_list[i].why != null || _data.recomd_list[i].why != 'null') {
+            _why=_data.recomd_list[i].why;
+          }
+
+          if(_goodsCode == '') {
+            continue;
+          }
+
+          var array = [];
+          array.push(_data.recomd_list[i]);
+
+          itriData.push({
+            itemid: _goodsCode,
+            goodsName: _goodsName,
+            clickurl: '/goods/GoodsDetail.jsp?i_code=' + _goodsCode,
+            imgurl: getGoodsImgUrl(_goodsCode,'1','000'),
+            title: _goodsName,
+            recomd_id: _bgwPoc.recomd_id,
+            recomd_list: array,
+            why: _why,
+            rec_pos: itriDataObject.rec_pos
+          });
+        }// end if
+      }//ajaxSuccess end
+    });//ajaxTool end
+  }
+  return itriData;
+};
+
+//商品號碼反算img相對位置 copy from searchEngine.js lckao 2020.07.02
+function getGoodsPath(goodsCode, imageGb, operator) {
+  var temp = "";
+  var goodsPath = "";
+
+  for (var i=0; i<(10-goodsCode.length); i++) {
+    temp += "0";
+  }
+  temp += goodsCode;
+  
+  if(!/^[0-9]+$/.test(operator)){
+    operator = new Date().getTime();
+  }
+  
+  goodsPath = "/"+operator
+      +"/goodsimg/"+temp.substring(0, 4)
+      +"/"+temp.substring(4, 7)
+      +"/"+temp.substring(7, 10)
+      +"/"+goodsCode;
+  if (imageGb == "1") {
+    goodsPath += "_L.jpg";
+  } else {
+    goodsPath += "_X.jpg";
+  }
+
+  return goodsPath;
+}
+
+//算出商品圖片路徑 lckao 2020.07.03
+function getGoodsImgUrl(goodsCode, imageGb, operator) {
+  var goodsImgUrl = getGoodsPath(goodsCode, imageGb, operator);
+  goodsImgUrl = getGoodsImgPathWebp(goodsImgUrl,navigator.userAgent);//webp流程
+  return momoj.getImgSrcCloud({org:goodsImgUrl});
+}
+
+/**將資料轉換成html的樣式，再放入html array，要50品顯示1-25品為你可能會喜歡,25-50為大家都在買、其他備用
+ * 首頁你可能會喜歡用
+ * itriData 工研院提供的資料
+ * momoData momo的資料
+ * block  itri 工研院資料
+ * @mdli 2017.06.20
+ */
+var insertGoodsToHtmlForMainPage = function (mainObj, itriData, block, settings) {
+  var defaultSettings = {
+    target: '_top',
+    type: 1
+  };
+  momoj.extend(defaultSettings, settings);
+  
+  var html = new Array();
+  var type = defaultSettings.type;
+
+  var needTagNum;
+  var needShowNum;
+
+  switch(type){
+    case 1://你可能會喜歡
+      needTagNum = _bgwPoc.tabNumYouLike;
+      needShowNum = _bgwPoc.displayYouLikeTopk;
+      break;
+    case 2://大家都在買（別人也逛過）
+      needTagNum = 5;
+      needShowNum = 25;
+      break;
+  }
+
+  var momoData = _bgwPoc.getPromoPriceData(itriData);
+  var promoObj = new _bgwPoc.promoObj(momoData, needTagNum, needShowNum);
+  var isNeedContinue = promoObj.isNeedContinue;
+  var dataPromoPrice = promoObj.dataPromoPrice;
+  needShowNum = promoObj.needShowNum;
+
+  //將資料插入到html裡
+  var showConut = 0;
+  for (var i = 0; i < itriData.length; i++) {
+    try {
+      var nowData = itriData[i];
+
+      if(isNeedContinue && !(nowData.itemid in dataPromoPrice)) continue;//沒有在變價內跳過，但是完全沒有還是要產生區塊。
+
+      var recomd_id = nowData.recomd_id;
+      var promoData = dataPromoPrice[nowData.itemid];
+    
+      var goods = composeOfItriGoodsAndMomoGoodsForMainPage(nowData);
+      goods = _bgwPoc.parseItirGoodsUrl(goods, nowData, block);
+      goods.img = getGoodsImgUrl(goods.goodsCode,'1',goods.timestamp);
+        
+      if(showConut >= needShowNum){//進備份
+        if(type == '1'){
+          var _tmpHtml = new Array();
+          pushOneHermesLi(_tmpHtml, goods, defaultSettings, block, type, recomd_id, promoData);
+          _bgwPoc.backupGoods.push(_tmpHtml.join(''));
+        }
+      }else{
+        pushOneHermesLi(html, goods, defaultSettings, block, type, recomd_id, promoData);
+
+        showConut++;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  
+  mainObj.html(html.join(''));
+};
+
+/**
+* push one li to html array
+* @param html html string array
+* @author lckao 2020.07.10
+*/
+var pushOneHermesLi = function(html,goods,defaultSettings,block,type,recId,promoData){
+  var classPrefix = '';
+  var classA = '';
+  var imgHeight = '';
+  var favDelDiv = '';
+  var imgTag = '';
+  var price1 = '';
+  var price2 = '';
+  
+  var formatFavDelDiv = 
+      '  <p class="hoverTip">' +
+      '    <span class="addlikebtn" onclick="mayLike_follow('+ goods.goodsCode +',true,momoj(this),\''+ recId +'\');" title="喜歡"></span>' +
+      '    <span class="removelikebtn" onclick="mayLike_follow('+ goods.goodsCode +',false,momoj(this),\''+ recId +'\');" title="移除"></span>' +
+      '  </p>';
+  
+  switch(type){
+    case 1://你可能會喜歡
+      classPrefix = '';
+      classA = 'youLikePic';
+      imgHeight = '160';
+      favDelDiv = formatFavDelDiv;
+      break;
+    case 2://大家都在買（別人也逛過）
+      classPrefix = 'eb_';
+      classA = 'ebdBuyPic';
+      imgHeight = '110';
+      favDelDiv = '';
+      break;
+  }
+
+  if(typeof promoData != 'undefined'){
+    if (typeof promoData.GOODS_NAME != 'undefined' && promoData.GOODS_NAME != "") {//處理品名
+      goods.title = promoData.GOODS_NAME;
+    }
+
+    if(typeof promoData.OPERATOR != 'undefined') {//處理圖片
+      goods.img = getGoodsImgUrl(goods.goodsCode,'1',promoData.OPERATOR);
+    }
+
+    if(typeof promoData.AFTER_PROMO_DATA != 'undefined'){//折後價處理 //商品有折後價，秀<促銷價、折後價>；商品無折後價，秀<市價、促銷價>
+      if(promoData.AFTER_PROMO_DATA.showPromoPriceYn == '1' 
+         && promoData.AFTER_PROMO_DATA.promoPrice != promoData.AFTER_PROMO_DATA.salePrice){
+        price1 = "$<b>"+_bgwPoc.commafy(promoData.AFTER_PROMO_DATA.salePrice)+"</b>";
+      }else if(promoData.AFTER_PROMO_DATA.promoPrice != promoData.AFTER_PROMO_DATA.custPrice){
+        price1 = "$<b>"+_bgwPoc.commafy(promoData.AFTER_PROMO_DATA.custPrice)+"</b>";
+      }
+      price2 = "$<b>"+_bgwPoc.commafy(promoData.AFTER_PROMO_DATA.promoPrice)+"</b>";
+    }else{
+      price2 = "$<b>"+_bgwPoc.commafy(promoData.LAST_PRICE)+"</b>";//最終價格
+    }
+
+    if(typeof promoData.imgTagUrl != 'undefined') {//處理你可能會喜歡圓標圖
+      imgTag = '<img src="'+ promoData.imgTagUrl + '">';
+    }
+  }
+  
+  html.push('<li class="'+ classPrefix + goods.itemid +'">');
+  html.push('  <a class="'+ classA +'" href="'+ goods.url +'" target="'+ defaultSettings.target +'"'
+               +' title="'+ goods.title+'"block="'+ block +'"item="'+ goods.goodsCode +'">');
+  html.push('    <div class="prdImgWrap">');
+  html.push('      <span class="imgTag">'+ imgTag +'</span>');
+  html.push('      <img height="'+ imgHeight +'" width="auto" title="'+ goods.title+'"'
+                     +' alt="'+ goods.title+'" src="'+ goods.img +'">');
+  html.push('    </div>');
+  html.push('    <p class="prdname">'+ goods.title +'</p>');
+  html.push('    <p class="prdprice">');
+  html.push('      <span class="prdprice_box01">'+ price1 +'</span>');
+  html.push('      <span class="prdprice_box02">'+ price2 +'</span>');
+  html.push('    </p>');
+  html.push('  </a> ');
+  html.push(favDelDiv);
+  html.push('</li> ');
+}
+
+/** 將工研院和momo的資料進行合併
+ * itriData 工研院提供的資料
+ * return goods為合併後的資料
+ */
+var composeOfItriGoodsAndMomoGoodsForMainPage = function (itriData) {
+    var goods = {
+          url: itriData.clickurl,
+          img: itriData.imgurl.replace('_M.jpg','_L.jpg'),
+          title: itriData.title,
+          promoF: '',
+          price: '',
+          timestamp: '',
+          itemid: 'YOU_LIKE-' + itriData.itemid,
+          goodsCode: itriData.itemid,
+          style: ''};//只有fM會使用此參數
+  return goods;
+};
+/** 將工研院和momo的資料進行合併
+ * itriData 工研院提供的資料
+ * momoData momo的資料
+ * return goods為合併後的資料
+ */
+var composeOfItriGoodsAndMomoGoods = function (itriData, momoData) {
+  var goods = {
+        goodsCode: itriData.itemid,
+        url: itriData.clickurl,
+        img: itriData.imgurl.replace('_M.jpg','_L.jpg'),
+        title: itriData.title,
+        promoF: '',
+        price: '熱銷一空',
+        timestamp: '',
+        goodsCode: itriData.itemid,
+        imgTagUrl: '',//圓標圖
+        style: '',
+        target: ''};
+
+        
+  if(_bgwPoc.func == 'xiaoi'){
+    goods.style = 'style="font:13px/16px Helvetica"';
+    goods.target = '_blank';
+  }else{
+    goods.target = '_top';
+  }
+
+  var gc = 'GDS-' + itriData.itemid;
+  momoj.each(momoData.rtnData, function(key, value) {
+    if(key == gc) {
+      //title
+      if (value.GOODS_NAME != "") {
+        goods.title = value.GOODS_NAME;
+      }
+      //promoF
+      if (typeof goods.why != 'undefined' && goods.why == 'NewSale' && value.ENTP_COMM_YN != "1") {//抽%供應商 jrhsu 20200717
+        goods.promoF = '<img style="margin:0px;" alt="本週新降價" title="本週新降價" src="//img1.momoshop.com.tw/ecm/img/cmm/main/toKill.png">';
+      } else if(typeof goods.why != 'undefined' && goods.why == 'Promo') {
+        if (value.DISCOUNT_YN) {
+          goods.promoF = '<img src="//img1.momoshop.com.tw/ecm/img/cmm/category/discountIcon.png" alt="現金折扣" title="現金折扣">';
+        }
+      } else if(value.CP_YN == "1" && value.ENTP_COMM_YN != "1") {//有折價卷,且不是抽%供應商 jrhsu 20200717
+        goods.promoF = '<img alt="可使用折價券" title="可使用折價券" src="//img1.momoshop.com.tw/ecm/img/cmm/category/couponsIcon.png">';
+      }
+      //price、style
+      var finalPrice = value.LAST_PRICE;//先直接給最終價格
+      if(value.AFTER_PROMO_DATA){//折後價處理
+        if(value.AFTER_PROMO_DATA.showPromoPriceYn == '1' && value.AFTER_PROMO_DATA.promoPrice != value.AFTER_PROMO_DATA.salePrice){
+          finalPrice = value.AFTER_PROMO_DATA.promoPrice;
+        }
+      }
+      if (finalPrice > 0) {
+        finalPrice = _bgwPoc.commafy(finalPrice);
+        if(_bgwPoc.func == 'fM' || _bgwPoc.func == 'xiaoi' || _bgwPoc.func == 'searchShop') {
+          goods.price = '$' + finalPrice;
+        } else {
+          goods.price = finalPrice;
+        }
+        goods.style = '';
+      }
+      //timestamp
+      if(!!value.OPERATOR) {
+        goods.timestamp = value.OPERATOR;
+      }
+      //圓標圖
+      if (value.imgTagUrl){
+        goods.imgTagUrl = value.imgTagUrl;
+      }
+    }
+  });
+  return goods;
+};
+
+//設定左右箭頭的click事件，使用捲動方式 (首頁的您可能會喜歡)
+var setSliderMoveDirEvent = function (id, delegateClass, sliderFunc) {
+  momoj('#' + id).undelegate('click').delegate('.'+delegateClass, 'click', function(e) {
+    var _self = momoj(this);
+
+    if(_self.attr('go') == 'right') {
+      sliderFunc({moveWay:'L' , name:'mlr'});
+    } else {
+      sliderFunc({moveWay:'R' , name:'mlr'});
+    }
+  });
+};
+var setSliderMoveDirEventBlr = function (id, delegateClass, sliderFunc) {
+  momoj('#' + id).undelegate('click').delegate('.'+delegateClass, 'click', function(e) {
+    var _self = momoj(this);
+
+    if(_self.attr('go') == 'right') {
+      sliderFunc({moveWay:'L' , name:'blr'});
+    } else {
+      sliderFunc({moveWay:'R' , name:'blr'});
+    }
+  });
+};
+var setSliderMoveDirEventGlr = function (id, delegateClass, sliderFunc) {
+  momoj('#' + id).undelegate('click').delegate('.'+delegateClass, 'click', function(e) {
+    var _self = momoj(this);
+
+    if(_self.attr('go') == 'right') {
+      sliderFunc({moveWay:'L' , name:'glr'});
+    } else {
+      sliderFunc({moveWay:'R' , name:'glr'});
+    }
+  });
+};
+
+//取得momoWa的cookie值
+function getMwaSessionInfo(key) {
+  var _info = momoj().cookie(key);
+  if(_info){
+    return _info.slice(0, _info.indexOf("."));
+  }else {
+    return '';
+  }
+}
+
+var momowaCmds = momowaCmds || [];
+
+/** 推送recomd_id **/
+function sendRecommendId(recomd_id){
+  if(typeof recomd_id == "string" && momowaCmds){
+    var momowaSiteId = "shop";
+    var ua = navigator.userAgent.toLowerCase();
+    if(isMobile(ua)){ //手機裝置
+      if(ua.indexOf("momoshop") >= 0){
+        momowaSiteId = "shopapp";    //APP
+      }else{
+        momowaSiteId = "shopmobile"; //WEB
+      }
+    }
+
+    momowaCmds.push(['setSiteId',momowaSiteId]);
+    momowaCmds.push(['setTrackerUrl','https://momowa.momoshop.com.tw/momowa/rc/RC.MMW']);
+    momowaCmds.push(['setRecommendId',recomd_id]);
+    momowaCmds.push(['trackPageView']);
+  }
+  (function() {
+    var _mwa = document.createElement('script');
+    _mwa.type = 'text/javascript';
+    _mwa.async = true;
+    _mwa.src = 'https://momowa.momoshop.com.tw/momowa/rc/js/momowa.js?_=20200513001';
+    var _mwa_s = document.getElementsByTagName('script')[0];
+    _mwa_s.parentNode.insertBefore(_mwa, _mwa_s);
+  }());
+}
+
+//設定左右箭頭的切換事件
+var setClickEvent = function (id) {
+
+  momoj('#' + id).delegate('.leftBtn' , 'click', function(e) {
+    var length = momoj('#' + id + ' .TabMenu .tabMenu_number li').length;
+    var selectedIndex = momoj('#' + id + ' .TabMenu .tabMenu_number .selected').index();
+
+    if((selectedIndex - 1) < 0) {
+        selectedIndex = length - 1;
+    } else {
+        selectedIndex--;
+    }
+
+    changeTabAndContent(id, selectedIndex);
+  });
+
+  momoj('#' + id).delegate('.rightBtn' , 'click', function(e) {
+    var length = momoj('#' + id + ' .TabMenu .tabMenu_number li').length;
+    var selectedIndex = momoj('#' + id + ' .TabMenu .tabMenu_number .selected').index();
+
+    if((selectedIndex + 1) >= length) {
+      selectedIndex = 0;
+    } else {
+      selectedIndex++;
+    }
+
+    changeTabAndContent(id, selectedIndex);
+  });
+
+};
+
+//切換頁籤及資料內容
+var changeTabAndContent = function (id, currentSelectedIndex) {
+  var tabMenu = momoj('#' + id + ' .TabMenu .tabMenu_number li');
+  var tabContent = momoj('#' + id + ' .TabContentD');
+
+  tabMenu.each(function (i) {
+
+    if(i != currentSelectedIndex) {
+      momoj(this).removeClass('selected');
+      momoj('a', this).removeClass('selected');
+
+    } else {
+      momoj(this).addClass('selected');
+      momoj('a', this).addClass('selected');
+
+    }
+  });
+
+  tabContent.each(function (i) {
+    if(i != currentSelectedIndex) {
+      momoj(this).removeClass('selected');
+    } else {
+      momoj(this).addClass('selected');
+    }
+  });
+};
+//初始化268浮層
+var set268ClickEvent = function () {
+  momoj('#bt_0_272_01_e1').on('click','.hoverEle' , function(e) {
+    open268Layer();
+  });
+}
+//取268的浮層資料
+var open268Layer = function (){
+  var _container = momoj('#bt_0_268_sub');
+  if(_container.length == 0){
+   return;
+  }
+  //取268的浮層資料 第一次進來的時候 #bt_0_268_sub 裡面沒資料 透過getpage去要資料  有資料直接印出浮層
+  if(_container.html().trim() == ''){
+    _container.load('/ajax/GetPage.jsp?url=/10/000/00/000/bt_0_268_sub.html',function(){
+      var _innerHtml = _container.html();
+      openfloatingLayerBox3('您可以自訂想要推薦的商品分類：(最多可編輯20個分類)',760,_innerHtml,'bt_0_268_Layer');
+      mayLike_getCategoryCookie();
+      momoj('#bt_0_268_Layer #mayLike_Tooth').find('li').eq(0).click();
+    });
+  }else{
+    var _innerHtml = _container.html();
+    openfloatingLayerBox3('您可以自訂想要推薦的商品分類：(最多可編輯20個分類)',760,_innerHtml,'bt_0_268_Layer');
+    mayLike_getCategoryCookie();
+    momoj('#bt_0_268_Layer #mayLike_Tooth').find('li').eq(0).click();
+  }
+};
+
+//268浮層區塊點牙齒開大分類功能
+var mayLike_openLcategoryList = function (thisObj){
+  thisObj.parent().find('li').removeClass('selected');
+  thisObj.addClass('selected');
+  var thisId = thisObj.attr('id');
+  momoj('#bt_0_268_Layer #mayLike_Lcode').find('ul').removeClass('selected');
+  momoj('#bt_0_268_Layer #mayLike_Lcode').find('.' + thisId).addClass('selected');
+};
+//268浮層區塊點全選或取消
+var mayLike_selectAll = function (checked){
+  momoj('#bt_0_268_Layer #mayLike_Lcode').find('ul.selected input').prop('checked',checked);
+};
+var mayLike_checkboxClick = function (clickObj){
+  var selectCnt = momoj('#bt_0_268_Layer #mayLike_Lcode').find('input:checked').parents('li').length;
+  if(selectCnt > 20){
+    clickObj.prop('checked',false);
+    alert('最多可編輯20個喜好分類');
+  }
+};
+//268浮層選管區塊異動時使用
+var mayLike_inputChange = function(){
+  var selected_id = momoj('#bt_0_268_Layer #mayLike_Tooth .selected').eq(0).attr('id');
+  mayLike_cntSelectNum(selected_id);
+  mayLike_showCheckboxLiSelect();
+};
+//268浮層統計選了幾個館
+var mayLike_cntSelectNum = function (toothId){
+  var _selectCnt = momoj('#bt_0_268_Layer #mayLike_Lcode .' + toothId + ' input:checked').length;
+  var _html = _selectCnt == 0 ? '':'('+_selectCnt+')';
+  momoj('#bt_0_268_Layer #mayLike_Tooth #' + toothId).find('b').html(_html);
+};
+var mayLike_showCheckboxLiSelect = function(){
+  momoj('#bt_0_268_Layer #mayLike_Lcode').find('input:checked').parents('li').addClass('selected');
+  momoj('#bt_0_268_Layer #mayLike_Lcode').find('input:not(:checked)').parents('li').removeClass('selected');
+};
+//268浮層選完館架後確定事件
+var mayLike_categoryConfirm = function (){
+  var lCodeArr = new Array();
+  momoj('#bt_0_268_Layer #mayLike_Lcode').find('input:checked').each(function(){
+    var thisName = momoj(this).attr('name');
+    if(typeof thisName !='undefined'){
+      var lCode = thisName.split('_').length == 2 ? thisName.split('_')[1]:'';
+      lCodeArr.push(lCode);
+    }
+  });
+  momoj().cookie('mayLike_category',lCodeArr.toString(), {expires:365});
+  momoj(".floatingLayerBox .closeBtn").click();
+  reset272Div();
+  _bgwPoc.doPost();
+};
+//當針對區塊頁面重新整理的時候先將舊資料清空
+var reset268Div = function(){
+  var _html = '<a class="rightBtn mlr" go="right"></a><a class="leftBtn mlr" go="left"></a>'
+    +'<div class="slide"><ul></ul></div>';
+  momoj('#bt_0_268_01 .view').html(_html);//
+};
+var reset272Div = function(){
+  var _html = '<div class="leftarrow leftBtn mlr" go="left"></div><div class="rightarrow rightBtn mlr" go="right"></div>'
+    +'<ul></ul>';
+  momoj('#bt_0_272_01 .boxcontent').html(_html);//
+};
+//268浮層取的記錄的管代號cookie
+var mayLike_getCategoryCookie = function (){
+  var categoryCookie = momoj().cookie('mayLike_category');
+  if(typeof categoryCookie =='undefined' || categoryCookie == null){
+    return;
+  }
+  var categoryCode = categoryCookie.split(',');
+  for(var i=0,j = categoryCode.length; i<j;i++){
+    momoj('#bt_0_268_Layer #mayLike_Lcode').find('input[name=lCode_'+categoryCode[i]+']').prop('checked',true);
+  }
+  mayLike_cntAllToothSelectNum();
+};
+//268浮層計算所有牙齒下選擇大分類的數量
+var mayLike_cntAllToothSelectNum = function (){
+  momoj('#bt_0_268_Layer #mayLike_Tooth').find('li').each(function(){
+    var selected_id = momoj(this).attr('id');
+    mayLike_cntSelectNum(selected_id);
+  });
+  mayLike_showCheckboxLiSelect();
+};
+//268區塊你可能會喜歡-追蹤 . itrilog is from itriweblog.js
+var mayLike_follow = function(goodsCode,follow,thisObj,recomd_id){
+  itrilog.setGid(goodsCode);
+  itrilog.setCustomerlization("from_rec",recomd_id);
+  if(follow){
+    var _bgImg ='/ecm/img/de/0/bt_0_268/star_on.png?t=20170815001';
+    thisObj.css('background-image','url('+_bgImg+')');
+    itrilog.setAction(itrilog.itri_conf.ACTION.FavAdd);
+  }else{
+    itrilog.setAction(itrilog.itri_conf.ACTION.UnFavAdd);
+  }
+  itrilog.senditri();
+  if(!follow){
+    appendBackupData(thisObj);
+  }
+};
+//268區塊補備用資料
+var appendBackupData = function(thisObj){
+  if(_bgwPoc.backupCnt >= _bgwPoc.backupGoods.length){
+    _bgwPoc.backupCnt=0;
+    _bgwPoc.backupGoods = new Array();
+    reset272Div();
+    _bgwPoc.doPost();
+  }
+  var _index = thisObj.parents('li').index();
+  momoj('#bt_0_272_01 .boxcontent ul').each(function(){
+    momoj(this).find('li').eq(_index).remove();
+    momoj(this).append(_bgwPoc.backupGoods[_bgwPoc.backupCnt]);
+  });
+  _bgwPoc.backupCnt++;
+};
+
+//抓喜好設定產生喜好名單(需要的商品類別)
+var set_itriData_f_categ_info = function (_itriData){
+  var categoryCookie = momoj().cookie('mayLike_category');
+  if(typeof categoryCookie =='undefined' || categoryCookie == null || categoryCookie == ''){
+    return;
+  }
+  var categoryArr = new Array();
+  var categoryCode = categoryCookie.split(',');
+  momoj.each(categoryCode, function(index, catCode){
+    var categoryObj = {};
+    categoryObj.code = catCode + '00000';
+    categoryArr.push(categoryObj);
+  });
+  _itriData['f_categ_info']=categoryArr;
+};
+
+//推薦商品URL後面參數
+_bgwPoc.parseItirGoodsUrl = function (goods, itriData, block) {
+  var _urlPara = '&cid=rec' + block + '&oid=B' + _bgwPoc.func;
+
+  _urlPara += _bgwPoc.getMdivUrl(itriData);
+
+  if (typeof itriData.recomd_id != 'undefined' && itriData.recomd_id != '') {
+    _urlPara += '&recomd_id=' + itriData.recomd_id;
+  }
+
+  if (_bgwPoc.mode == 1) {
+    _urlPara = encodeURIComponent(_urlPara);
+  }
+
+  goods.url += _urlPara;
+
+  return goods;
+}
+
+//mdiv url字串
+_bgwPoc.getMdivUrl = function(itriData){
+  if(typeof itriData == 'undefined' || typeof itriData.rec_pos == 'undefined'){
+    return '';
+  }
+
+  var mdiv = '';
+  var ctype = 'B';
+  var rec_pos = itriData.rec_pos;
+  switch(rec_pos){
+    case 'p'://你可能會喜歡
+      mdiv = '1099900000-bt_0_272_01-';
+      break;
+    case 'p2'://大家都在買
+      mdiv = '1099900000-bt_0_269_01-';
+      break;
+    case 'gop_cs'://您可能也需要
+      mdiv = 'goodsDetail_momoshop-cs-';
+      break;
+    case 'gop_av'://別人也逛過
+      mdiv = 'goodsDetail_momoshop-av-';
+      break;
+    case 'mocs'://xioai
+      mdiv = '1099900000-bt_xiaoi-';
+      break;
+    case 'cap_p0'://小分類
+      mdiv = 'category_momoshop-cap_p0-';
+      break;
+    case 'cap_p2'://大分類
+      mdiv = 'category_momoshop-cap_p2-';
+      break;
+    case 'cap_p3'://管架
+      mdiv = 'category_momoshop-cap_p3-';
+      break;
+    case 'sr'://搜尋 你可能會喜歡
+      mdiv = 'search_momoshop-bt_0_layout_b268-';
+      break;
+  }
+  return '&mdiv=' + mdiv + '&ctype=' + ctype;
+}
+
+//fD 小分類頁 or fG 商品頁 or fL 大分類頁 流程
+_bgwPoc.process1 = function (_bObj, _p1, _htmlCss, _block, pageType) {
+  if(_p1.length < _bgwPoc.topk){
+    return;
+  }
+
+  //開賣通知
+  var onSaleNotice = momoj("#isSaleNotice").val();
+  if(typeof onSaleNotice !='undefined' && (onSaleNotice=='1' || onSaleNotice=='0')){
+    return;
+  }
+
+  var divId = '';
+  var ulId = '';
+  var seoTagH3ToP = '';
+  var maskBtnClass = '';
+  if(pageType == 1){
+    divId = 'recGoods';
+    ulId = 'tabRecordAreaNew2';
+    seoTagH3ToP = '<div class="recordTitle"><span class="forArrow"></span>您可能也需要</div>';
+    maskBtnClass = 'mask';//商品頁還不會被18禁遮照影響
+
+  }else if(pageType == 2){
+    divId = 'recGoods2';
+    ulId = 'tabRecordAreaNew1';
+    seoTagH3ToP = '<div class="recordTitle"><span class="forArrow"></span>別人也逛過</div>';
+    maskBtnClass = 'mask';//商品頁還不會被18禁遮照影響
+
+  }else if(pageType == 3){
+    divId = 'recGoods';
+    ulId = 'tabRecordAreaNew2';
+    seoTagH3ToP = '<p class="titleName"><span class="forArrow"></span>您專屬推薦商品</p>';
+    maskBtnClass = 'recommendBtn';//18禁遮照撞名
+
+  }else{
+    return;
+  }
+
+  var _goodsPrice = _bgwPoc.getPromoPriceData(_p1);
+
+  if (_goodsPrice.rtnCode == '200') {
+    var mainDiv = momoj('#' + divId);
+    var numberOfGoods = _p1.length;
+    var numberOfGoodsInSingleTab = 4;
+
+    if(!!_htmlCss && _htmlCss.length > 0){
+      _bObj.append(_htmlCss.join(''));
+    }
+    //刪除css
+    var style = mainDiv.prev();
+    if(style[0] != null && style[0].tagName == 'STYLE') {
+      style.remove();
+    }
+    mainDiv.remove();
+
+    var _html = new Array();
+
+    //產生tab menu
+    _html.push('<div id=\"' + divId + '\" class="recordAreaNew">',
+      seoTagH3ToP,
+      '<div class="TabMenu">',
+      '  <ul class="tabMenu_number" id="'+ ulId +'">',
+      '    <li class="selected"><a class="First-Element">1<b></b></a></li>',
+      '    <li><a class="First-Element">2<b></b></a></li>',
+      '    <li><a class="First-Element">3<b></b></a></li>',
+      '  </ul>',
+      '</div>',
+      '<div class="view TabContent">');
+
+    insertGoodsToHtmlNew(_p1, _goodsPrice, _html, _block, numberOfGoodsInSingleTab);
+    _html.push('</div>');
+
+    _bObj.append(_html.join(''));
+
+    //設定左右箭頭
+    if (numberOfGoods > numberOfGoodsInSingleTab) {
+      mainDiv = momoj('#' + divId);//remove後重抓
+      mainDiv.find('.view.TabContent').append('<span class="'+ maskBtnClass +' leftmask"><a class="leftBtn"></a></span>')
+                                      .append('<span class="'+ maskBtnClass +' rightmask"><a class="rightBtn"></a></span>');
+      mainDiv.data("StartTab",1);
+      mainDiv.TabDelay({RollerSpeed: 0});
+      setClickEvent(divId);
+    }else{
+      momoj('#' + ulId).hide();
+      changeTabAndContent(divId, 0);
+    }
+  }
+}
+
+//xiaoi or 搜尋結果頁
+_bgwPoc.process2 = function (_bObj, _p1, _htmlCss, block) {
+  if(_p1.length < _bgwPoc.topk) {
+    return;
+  }
+  
+  var momoData = _bgwPoc.getPromoPriceData(_p1);
+  if(momoData.rtnCode == '200') {
+    _bObj.show();
+
+    var needTagNum = _bgwPoc.topk;
+    var needShowNum = _bgwPoc.topk;
+    
+    var promoObj = new _bgwPoc.promoObj(momoData, needTagNum, needShowNum);
+    var isNeedContinue = promoObj.isNeedContinue;
+    var dataPromoPrice = promoObj.dataPromoPrice;
+    needShowNum = promoObj.needShowNum;
+
+    var _html = new Array();
+    var showConut = 0;
+    momoj.each(_p1, function (i, itriData) {
+      if(isNeedContinue && !(itriData.itemid in dataPromoPrice)) return true;//沒有在變價內跳過，但是完全沒有還是要產生區塊。
+
+      if(showConut >= needShowNum) return false;//超過顯示數量
+
+      _html.push(_bgwPoc.genItirGoodsLi(itriData, momoData, block));
+
+      showConut++;
+    });
+    var showUl = _bObj.find('ul');
+    showUl.html(_html);
+    if(!!_htmlCss && _htmlCss.length > 0){
+      showUl.parent().append(_htmlCss.join(''));
+    }
+  }
+}
+
+/**將資料轉換成html的樣式，再放入html array (新的板型)
+ * itriData 工研院提供的資料
+ * momoData momo的資料
+ * html 目前要插入資料的html array
+ * block  itri 工研院資料
+ */
+var insertGoodsToHtmlNew = function (itriData, momoData, html, block, numberOfGoodsInSingleTab, recommd) {
+  var needTagNum = numberOfGoodsInSingleTab;
+  var needShowNum = numberOfGoodsInSingleTab * 3;
+    
+  var promoObj = new _bgwPoc.promoObj(momoData, needTagNum, needShowNum);
+  var isNeedContinue = promoObj.isNeedContinue;
+  var dataPromoPrice = promoObj.dataPromoPrice;
+  needShowNum = promoObj.needShowNum;
+
+  //將資料插入到html裡
+  var showConut = 0;
+  for (var i = 0; i < itriData.length; i++) {
+
+    if(isNeedContinue && !(itriData[i].itemid in dataPromoPrice)) continue;//沒有在變價內跳過，但是完全沒有還是要產生區塊。
+
+    if(showConut >= needShowNum) break;//超過顯示數量
+
+    if(showConut % numberOfGoodsInSingleTab == 0) {
+      html.push('<div class="TabContentD">');
+      html.push('<ul>');
+    }
+
+    try {
+      var recomd_list = itriData[i].recomd_list || [];
+      var recomd_html = [];
+      
+      if(typeof itriData[i].recomd_id != 'undefined') {
+        recomd_html.push('推薦理由');
+        if (recomd_list.length > 0 && typeof recommd != 'undefined'){
+          for (var j = 0; j < recomd_list.length; j++) {
+
+            if (recomd_list[j].msg_type == 'bsim') {
+              recomd_html.push('看此商品的人也看了&#13');
+              recomd_html.push(recomd_list[j].name+'&#13');
+              recomd_html.push('關聯度：'+Math.floor(recomd_list[j].msg_score)+'%&#13');
+            }
+            else if (recomd_list[j].msg_type == 'csim') {
+              recomd_html.push('相似商品&#13');
+              recomd_html.push(recomd_list[j].name+'&#13');
+              recomd_html.push('相似度：'+Math.floor(recomd_list[j].msg_score)+'%&#13');
+            }
+            else if (recomd_list[j].msg_type == 'ctp') {
+              recomd_html.push('分類熱門&#13');
+              //recomd_html.push(recomd_list[j].name);
+              recomd_html.push('熱門度：'+Math.floor(recomd_list[j].msg_score)+'%&#13');
+              if (parseInt(recomd_list[j].sales) >= 50) {
+                recomd_html.push('近30日銷量：'+recomd_list[j].sales+'件&#13');
+              }
+            }
+            else if (recomd_list[j].msg_type == 'gtp') {
+              recomd_html.push('全站熱門&#13');
+              //recomd_html.push(recomd_list[j].name);
+              recomd_html.push('熱門度：'+Math.floor(recomd_list[j].msg_score)+'%&#13');
+              if (parseInt(recomd_list[j].sales) >= 50) {
+                recomd_html.push('近30日銷量：'+recomd_list[j].sales+'件&#13');
+              }
+            }
+            else if (recomd_list[j].msg_type == 'cs') {
+              recomd_html.push('您最近看過&#13');
+              recomd_html.push(recomd_list[j].name+'&#13');
+            }
+            else if (recomd_list[j].msg_type == 'etc') {
+              recomd_html.push('專屬您的推薦商品&#13');
+              //recomd_html.push(recomd_list[j].name);
+              recomd_html.push('推薦度：'+Math.floor(recomd_list[j].msg_score)+'%&#13');
+            }
+          } // for loop
+        }// if
+      }
+
+      var goods = composeOfItriGoodsAndMomoGoods(itriData[i], momoData);
+      goods = _bgwPoc.parseItirGoodsUrl(goods, itriData[i], block);
+      var tag = 'li';
+
+      html.push('<' + tag + '><a href="' + goods.url + '" target="_top" title="' + goods.title);
+      html.push('" block="' + block + '" class="REC" item="' + itriData[i].itemid + '">');
+      if (recomd_list.length > 0 && typeof recommd != 'undefined'){
+        html.push('<img class="info" alt="'+recomd_html.join(' ')+'" title="'+recomd_html.join(' ')+'" ');
+        html.push(' src="//image.momoshop.com.tw/ecm/img/cmm/category/info.png">');
+      }
+      //插入圓標圖
+      if (goods.imgTagUrl){
+        html.push('<div class="prdImgWrap"><span class="imgTag"><img src="' + momoj.getImgSrc({org:goods.imgTagUrl}) + '"></span>');
+        html.push('<img width="200" height="200" src="' + getGoodsImgUrl(goods.goodsCode,'1',goods.timestamp) + '"></div>');
+      }else{
+        html.push('<img width="200" height="200" src="' + getGoodsImgUrl(goods.goodsCode,'1',goods.timestamp) + '">');
+      }
+      html.push('<p><span class="prdName">' + goods.title + '</span>');
+      html.push('   <span class="prdPrice">' +  goods.promoF + '$<b>' + goods.price + '</b></span>');
+      html.push('</p></a></' + tag + '>');
+
+    } catch (err) {
+      console.log(err);
+    }
+
+    if((showConut + 1) % numberOfGoodsInSingleTab == 0) {
+      html.push('</ul></div>');
+    }
+
+    showConut++;
+  }
+};
+
+//你可能會喜歡 li
+_bgwPoc.genItirGoodsLi = function (itriData, momoData, block) {
+  try {
+    var newG = composeOfItriGoodsAndMomoGoods(itriData, momoData);//與momoData合併過的goodsinfo
+    newG = _bgwPoc.parseItirGoodsUrl(newG, itriData, block);
+    var li = momoj('<li></li>');
+    var a = momoj('<a></a>').attr({'class':'REC','target':newG.target,'href': newG.url, 'title': newG.title, 'block': block});
+    //todo 補圓標，需要另外調整css。
+    var img = momoj('<img></img>').attr({'width':'80','height':'80','src':getGoodsImgUrl(newG.goodsCode,'1',newG.timestamp)});
+    var gNmae = momoj('<span></span>').html(newG.title);
+    var promo = momoj(newG.promoF);
+    var price = momoj('<b></b>').attr({'style':newG.style}).append(newG.price);
+    a.append(img, gNmae, promo, price);
+    li.append(a);
+    return li;
+  } catch (err) {
+    console.log(err);
+    return '';
+  }
+}
+
+//折扣資料
+_bgwPoc.getPromoPriceData = function(_p1){
+  var gCodes = new Array();
+  momoj.each(_p1, function (i, goods) {
+    gCodes.push(goods.itemid);
+  });
+
+  var momoData = momoj.ajaxTool({
+    data: {
+      flag: 2002,
+      promo_yn: 'Y',
+      goodsCode: gCodes
+    } 
+  });
+
+  return typeof momoData == 'undefined' ? {} : momoData;
+}
+
+//促銷資料物件
+_bgwPoc.promoObj = function(momoData, needTagNum, needShowNum){
+  var oThis = this;
+  oThis.dataPromoPrice = {};
+  oThis.needShowNum = needShowNum;
+  oThis.isNeedContinue = false;
+  try{
+    momoj.each(momoData.rtnData, function(key, value){
+      key = key.replace('GDS-','');
+      oThis.dataPromoPrice[key] = value;
+    });
+  
+    var dataPromoSize = Object.keys(oThis.dataPromoPrice).length;
+    if(dataPromoSize >= (needShowNum * 0.9)){//差一點點
+      oThis.needShowNum = dataPromoSize - (dataPromoSize % needTagNum);
+      oThis.isNeedContinue = true;
+    }
+  }catch(e){
+    //do nothing
+  }
+}
+
+// for search
+_bgwPoc.showYouMayLike = function () {
+  _bgwPoc.mode = 3;
+  _bgwPoc.func = 'searchShop';
+  _bgwPoc.script = 'searchShop.jsp';
+  _bgwPoc.postData = {
+      mid: 57
+    , uid: ''
+    , pid: 'searchShop'
+    , mode: _bgwPoc.mode
+  };
+
+  _bgwPoc.showBgw();
+}
+
+var objXioai = momoj('#bt_xiaoi');
+if(objXioai.length > 0){
+  _bgwPoc.doPost();
+}else{
+  momoj(window).on('load',function () {
+    _bgwPoc.doPost();
+
+    //初始化268浮層
+    set268ClickEvent();
+  });
+}
+//@ sourceURL=bgw.js

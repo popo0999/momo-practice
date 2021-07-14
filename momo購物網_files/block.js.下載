@@ -1,0 +1,1080 @@
+//for bt_2_092 
+(function($) {
+  var imgOnlinePath = "" ;
+  var sslDomain = document.location.href;
+  if(sslDomain.match(/momotest.momoshop.com.tw/i) || sslDomain.match(/ecmdev.momoshop.com.tw/i)
+      || /momouat[1]?[0-9]{1}\./.test(sslDomain) || sslDomain.indexOf("ecmuati.momoshop.com.tw") > -1
+      || /ecmuat[1]?[0-9]{1}\./.test(sslDomain) || /ecmqc[1]?[0-9]{1}\./.test(sslDomain)){    
+  }else{
+    var imgOnlinePath = "//img1.momoshop.com.tw" ; 
+  }
+  
+  $.fn.CrazyTabDelay = function(btId){
+     var _TabMenu = $('#'+btId+' .TabMenu');
+     var _TabContentD = $('#'+btId).find('.TabContentD');
+     var _count = 0; 
+     var _index = 0;
+     var _show = new Array();
+     _TabMenu.find('li span').each(function(){
+        var _span = $(this);
+        
+        if($.trim(_span.html())!='' && $.trim(_span.html())!='&nbsp;'){
+          _show[_index] ='1';
+          _count++;
+        }else{
+          _show[_index]='0';        
+          _span.parent('a').parent('li').remove();
+          _span.parent('li').remove();
+        }        
+        _index++;
+     });
+     _index =0;
+     _TabContentD.each(function(){
+        if(_show[_index]=='0'){
+          $(this).remove();
+        }
+        _index++;
+     });
+     
+     _TabMenu = $('#'+btId+' .TabMenu');
+     _TabContentD = $('#'+btId).find('.TabContentD');
+     
+     var _TabRan = 0;
+     if(_count>1){
+        _TabRan =  (Math.round(Math.random()*_count));
+        if(_TabRan > 1) _TabRan--;
+     }
+     
+     _TabMenu.find('li').eq(_TabRan).addClass('selected');
+     _TabContentD.eq(_TabRan).addClass('selected').show();
+     
+     _TabContentD.eq(_TabRan).find('[lazy=1],[lazy=2]').each(function(){
+      if(!!$.getImgSrc({org:$(this).attr("org")})) {
+          $(this).attr("src", $.getImgSrc({org:$(this).attr("org")}));
+    }
+        $(this).removeAttr("lazy");
+     });
+     
+     _TabMenu.delegate('li','mouseover',function(){
+        _TabContentD.removeClass('selected'); 
+        _TabMenu.removeClass('selected'); 
+        _TabMenu.find('li').removeClass('selected'); 
+        $(this).addClass('selected');
+        _TabContentD.eq($(this).index()).addClass('selected').show();
+        
+        _TabContentD.eq($(this).index()).find('[lazy=1],[lazy=2]').each(function(){
+      if(!!$.getImgSrc({org:$(this).attr("org")})) {
+            $(this).attr("src", $.getImgSrc({org:$(this).attr("org")}));
+      }
+          $(this).removeAttr("lazy");
+        });
+     });       
+             
+  }
+  
+  $.fn.CrazyTabDelay095 = function(btId){ 
+     var _TabMenu = $('#'+btId+' .TabMenu');
+     var _TabContentD = $('#'+btId).find('.TabContentD');
+     var _count = 1; 
+     var _index = 1;
+     var _show = new Array();
+      
+     _TabMenu.find('li p').each(function(){
+        var _span = $(this);
+        if($.trim(_span.html())=='' || $.trim( _span.html())=='0'){
+          _show[_index] ='1';
+          _count++;
+        }else{
+          _show[_index] ='0';
+          _span.parent('li').remove();
+        } 
+        _index++;
+     });
+     
+      _index =0;
+     _TabContentD.each(function(){
+        if(_show[_index]=='0'){
+          $(this).remove();
+        }
+        _index++;
+     });
+
+     _TabMenu = $('#'+btId+' .TabMenu');
+     _TabContentD = $('#'+btId).find('.TabContentD');
+     
+     _TabMenu.find('li').each(function(){
+       $(this).removeClass('selected');
+     });
+     _TabContentD.each(function(){
+       $(this).removeClass('selected');
+     });
+     
+     var _TabRan = 0;
+     if(_count>1){
+        _TabRan =  (Math.round(Math.random()*_count));
+        if(_TabRan > 1) _TabRan--;
+     }
+    
+     _TabMenu.find('li').eq(_TabRan).addClass('selected');
+     _TabContentD.eq(_TabRan).addClass('selected').show();
+     
+     _TabContentD.eq(_TabRan).find('[lazy=1],[lazy=2]').each(function(){
+      if(!!$.getImgSrc({org:$(this).attr("org")})) {
+          $(this).attr("src", $.getImgSrc({org:$(this).attr("org")}));
+    }
+        $(this).removeAttr("lazy");
+     });
+     
+     _TabMenu.delegate('li','mouseover',function(){
+        _TabContentD.removeClass('selected'); 
+        _TabMenu.removeClass('selected'); 
+        _TabMenu.find('li').removeClass('selected'); 
+        $(this).addClass('selected');
+        _TabContentD.eq($(this).index()).addClass('selected').show();
+        
+        _TabContentD.eq($(this).index()).find('[lazy=1],[lazy=2]').each(function(){
+      if(!!$.getImgSrc({org:$(this).attr("org")})) {
+            $(this).attr("src", $.getImgSrc({org:$(this).attr("org")}));
+      }
+          $(this).removeAttr("lazy");
+        });
+     });     
+             
+  }
+  $.fn.hiddenImg023 = function(){
+    $('#bt_A_023_01' + ' .TabContent').find('img').each(function(){
+      var _span = $(this);
+      var titleStr = _span.attr('title').trim();
+      var srcStr = _span.attr('src').trim();
+      var altStr = _span.attr('alt').trim();
+      
+      if(titleStr=='' && srcStr=='' && altStr==''){
+        _span.addClass("hiddenImg");
+      }else{
+        _span.removeClass("hiddenImg");
+      }
+      
+    });
+  }
+  $.fn.CrazyTabDelay023 = function(btId){
+    var _TabMenu = $('#'+btId+' .TabMenu');
+    var _TabContentD = $('#'+btId).find('.TabContentD');
+    var _count = 0; 
+    var _index = 0;
+    var _show = new Array();
+    
+    _TabMenu.find('li p').each(function(){
+      var _span = $(this);
+      if($.trim(_span.html())=='' || $.trim( _span.html())=='0'){
+        _show[_index] ='1';
+        _count++;
+      }else{
+        _show[_index] ='0';
+        _span.parent('li').remove();
+          }
+      _index++;
+    });
+    _TabMenu = $('#'+btId+' .TabMenu');
+    _TabContentD = $('#'+btId).find('.TabContentD');
+    _index =0;
+    _TabContentD.each(function(){
+      if(_show[_index]=='0'){
+        $(this).remove();
+      }
+          _index++;
+       });
+    var _TabRan = 0;
+    if(_count>1){
+      _TabRan =  (Math.round(Math.random()*_count));
+      if(_TabRan > 1){
+        _TabRan--;
+      }
+    }else{
+      $('#'+btId+' .arrows').hide();
+      $('#'+btId+' .TabMenu').hide();
+    }
+    _TabContentD = $('#'+btId).find('.TabContentD');
+    _TabContentD.removeClass('selected');
+    _TabMenu.find('li').removeClass('selected');
+    _TabMenu.find('li').eq(_TabRan).addClass('selected');
+    _TabContentD.eq(_TabRan).addClass('selected');
+    _TabContentD.eq(_TabRan).find('[lazy=1],[lazy=2]').each(function(){
+      if(!!$.getImgSrc({org:$(this).attr("org")})) {
+        $(this).attr("src", $.getImgSrc({org:$(this).attr("org")}));
+      }
+          $(this).removeAttr("lazy");
+        });
+    _TabMenu.delegate('li','mouseover',function(){
+      _TabContentD.removeClass('selected');
+      _TabMenu.removeClass('selected'); 
+      _TabMenu.find('li').removeClass('selected');
+      $(this).addClass('selected');
+      _TabContentD.eq($(this).index()).addClass('selected').show();
+      _TabContentD.eq($(this).index()).find('[lazy=1],[lazy=2]').each(function(){
+        if(!!$.getImgSrc({org:$(this).attr("org")})) {
+          $(this).attr("src", $.getImgSrc({org:$(this).attr("org")}));
+        }
+        $(this).removeAttr("lazy");
+      });
+  });
+  }
+  
+  $.fn.FloorBTShowR = function(btId ,eid ,cnt){
+    var _TabMenu = $('#'+btId+' .TabContent');
+    var _ChildList = _TabMenu.children();    
+
+    for(var i=1;i<=_ChildList.length;i++){
+    var _cnt = cnt;
+    var _show = new Array();
+      var _html = new Array();
+      var _node = $('#'+btId+'_P'+i+' > li');
+      var j=0;
+    if(_node.length>cnt){
+        for(j=0;j<_node.length;j++){
+            var _index = j+1;
+            var _eid = $('#'+btId+'_P'+i+'_'+_index+'_'+eid);
+            var _display = _eid.html();
+            if( _display!= null && _display.length>0 && _display == 0  ){
+              _show[j]=1;
+              _cnt = _cnt-1;
+            }else{
+              _show[j]=0;
+            }
+          }
+       j=0;
+          while(j<_cnt){
+            var _ShowIndex=Math.floor(Math.random()*_node.length);
+            if( _show[_ShowIndex]==0 ){
+              _show[_ShowIndex]=1;
+              j++;
+            }
+          }
+          
+      for(j=0;j<_node.length;j++){
+            if(_show[j]==0){
+              _node[j].setAttribute("style" , "display:none");
+            }else{
+              _node[j].setAttribute("style" , "display:block");
+            }
+          }
+    }
+   }
+ }
+  
+  $.fn.FloorTips = function(){
+
+    //----------若工研院API 斷線,則抓12速達(bt_209)的商品來遞補--------------bt_0_255_01_e2
+    var _getGoods = '';
+    if(momoj('.bt_0_255').length>0){
+      var _bt_209_id = momoj('.bt_0_255').eq(0).attr('id');//因為會變動所以抓bt_0_255的第一個
+      var _bt_209 = momoj("#"+_bt_209_id+"_e2"+" .TabMenu > ul > li");
+      var _bt_209_goods = momoj("#"+_bt_209_id+"_e2"+" .TabContent .TabContentD");
+      var _idName =["用品","流行","美妝","3C","生活","保健","家電","精品","食品","書店"];
+      var _idNo = ["0201001","0209002","0203001","0208003","0206001","0207002","0208001","0209001","0207001","0206003"];
+      var _bt209_id = new Array();
+      var _bt209_goods = new Array();
+      for(var i=0;i<_bt_209.length;i++){
+        _bt209_id[i] = _bt_209[i].textContent;
+        var _tmp = _bt_209_goods.eq(i);
+        var _goods = new Array();
+        var _gds = _tmp.find(".prdList >li >a .prdPrice >b");
+        for(var j=0;j<_gds.length;j++){
+        var _goodcode = _gds.eq(j).attr("class");
+        _goodcode = _goodcode.substring( _goodcode.indexOf("-")+1 );
+        //console.log(_gds.eq(j).attr("class")+" - "+_goodcode);
+        _goods[j] = _goodcode;
+        }
+        _bt209_goods[i]=_goods;
+        
+        //console.log("----------------------");
+      }
+      _getGoods = {
+        recomd_id : "24HR bt209"  
+      };
+      
+      var _group_list = new Array();;
+      for(var i=0;i<_idNo.length;i++){
+        var _floorid = {
+        group_id:_idNo[i]  
+        };
+        var _index = _bt209_id.indexOf( _idName[i] );
+        var _tmpList = _bt209_goods[_index];
+        var _floorGoods = new Array();
+        if(_tmpList){
+          for(var j=0;j<_tmpList.length;j++){
+            var recomd_list = {id:_tmpList[j]};
+            _floorGoods[j] = recomd_list;
+          }
+          _floorid['recomd_list'] = _floorGoods;
+          _group_list[i] = _floorid;
+        }
+      }
+      _getGoods['group_list'] = _group_list;
+    }
+
+    //傳入從工研院API取得的資料 去計算首頁 客製化樓層資料及推薦商品相關資訊 
+    var result = '';
+    momoj.ajax({
+      url: '/ajax/getBtFloor.jsp',  //ETN lckao 2020.03.31 將原本的hermes流程搬到這個api
+      async: false,
+      cache: false,
+      type: 'POST',
+      dataType: 'json',
+      contentType: 'application/json; charset=Big5',
+      data: encodeURIComponent(JSON.stringify(_getGoods)),
+      timeout: 30000,
+      success: function(rtnData){
+        result = rtnData;
+      },
+      error : function(err, msg1, msg2){
+        console.info("test log="+err+","+msg1+","+msg2);
+      }
+    });
+    var _html = new Array();
+    var _node = new Array();
+    var bt_0215 = momoj('#bt_0_215_01 > ul');
+    var count = result['count'];
+    var recomd_id = result['recomd_id'];
+    var _index = 0;
+    //推送recomd_id
+    sendRecommendId(recomd_id);
+      
+    if(count > 0){
+      //開始組首頁樓層區塊
+      for(var i=1;i<=count;i++){
+        var floor ='floor_'+( (i<10)?'0'+i:i);
+        var value = result[floor];
+        if( typeof value=='undefined') break;
+        bt_0215.append('<li org="'+floor+'">'+momoj('#'+value['BT_NAME']+'_e1').attr('title')+'</li>');
+        var _bt = momoj('#'+value['BT_NAME']);
+        var _btNo = parseInt(value['BT_NAME'].split('_')[2]);
+        var _btlayout = momoj('#bt_0_'+_btNo+'_01');
+        _bt.addClass(floor);
+        
+        
+        if(_btlayout.length>0){
+          if(recomd_id.length>0){
+            //---------------------工研院個人化推薦商品置入--------------------------------------
+            if( value['GoodsInfo'] != undefined && value['GoodsInfo'] != ''){
+              var goodsInfo = value['GoodsInfo'];
+              var _img = momoj('#'+value['BT_NAME']+'_e51 , #'+value['BT_NAME']+'_e57 , #'+value['BT_NAME']+'_e63');
+              _img.attr('width','100');
+              _img.attr('height','100');
+              _img.css('float','right');
+              _img.css('margin-top','10px');
+              
+              //1
+              //momoj('#'+value['BT_NAME']+'_e50').attr('href' , '/goods/GoodsDetail.jsp?i_code='+goodsInfo[0].GOODS_CODE+'&oid=mb&mdiv=1000000000-'+value['BT_NAME']+'-'+value['BT_NAME']+'_e50&ctype=B&recomd_id='+recomd_id);
+              momoj('#'+value['BT_NAME']+'_e50').attr('href' , '/goods/GoodsDetail.jsp?i_code='+goodsInfo[0].GOODS_CODE+'&oid=mb&mdiv=1000000000-'+value['BT_NAME']+'-'+value['BT_NAME']+'_e50&ctype=B'+'&rec_pos=1pp_s3');//hermes版edit
+              momoj('#'+value['BT_NAME']+'_e50').attr('title' , goodsInfo[0].GOODS_NAME);
+              momoj('#'+value['BT_NAME']+'_e51').attr('title' , goodsInfo[0].GOODS_NAME);
+              momoj('#'+value['BT_NAME']+'_e51').attr('alt' , goodsInfo[0].GOODS_NAME);
+              momoj('#'+value['BT_NAME']+'_e51').attr('org' , goodsInfo[0].GOODS_IMG);
+              momoj('#'+value['BT_NAME']+'_e51').attr('src' , '/ecm/img/cmm/blank.png');
+              momoj('#'+value['BT_NAME']+'_e52').text(goodsInfo[0].GOODS_Tittle);
+              momoj('#'+value['BT_NAME']+'_p4').attr('class' , 'GDS-'+goodsInfo[0].GOODS_CODE);
+              momoj('#'+value['BT_NAME']+'_e50 .price'+' .GDS-'+goodsInfo[0].GOODS_CODE).removeAttr("style");
+              momoj('#'+value['BT_NAME']+'_e50 .price').empty();
+              momoj('#'+value['BT_NAME']+'_e50 .price').html('$<b>'+goodsInfo[0].GOODS_Price+'</b>');
+              
+              //2
+              if(goodsInfo && goodsInfo.length > 1) {
+                //momoj('#'+value['BT_NAME']+'_e56').attr('href' , '/goods/GoodsDetail.jsp?i_code='+goodsInfo[1].GOODS_CODE+'&oid=mb&mdiv=1000000000-'+value['BT_NAME']+'-'+value['BT_NAME']+'_e56&ctype=B&recomd_id='+recomd_id);
+                momoj('#'+value['BT_NAME']+'_e56').attr('href' , '/goods/GoodsDetail.jsp?i_code='+goodsInfo[1].GOODS_CODE+'&oid=mb&mdiv=1000000000-'+value['BT_NAME']+'-'+value['BT_NAME']+'_e56&ctype=B'+'&rec_pos=1pp_s3');//hermes版edit
+                momoj('#'+value['BT_NAME']+'_e56').attr('title' , goodsInfo[1].GOODS_NAME);
+                momoj('#'+value['BT_NAME']+'_e57').attr('title' , goodsInfo[1].GOODS_NAME);
+                momoj('#'+value['BT_NAME']+'_e57').attr('alt' , goodsInfo[1].GOODS_NAME);
+                momoj('#'+value['BT_NAME']+'_e57').attr('org' , goodsInfo[1].GOODS_IMG);
+                momoj('#'+value['BT_NAME']+'_e57').attr('src' , '/ecm/img/cmm/blank.png');
+                momoj('#'+value['BT_NAME']+'_e58').text(goodsInfo[1].GOODS_Tittle);
+                momoj('#'+value['BT_NAME']+'_p5').attr('class' , 'GDS-'+goodsInfo[1].GOODS_CODE);
+                momoj('#'+value['BT_NAME']+'_e56 .price'+' .GDS-'+goodsInfo[1].GOODS_CODE).removeAttr("style");
+                momoj('#'+value['BT_NAME']+'_e56 .price').empty();
+                momoj('#'+value['BT_NAME']+'_e56 .price').html('$<b>'+goodsInfo[1].GOODS_Price+'</b>');
+              }
+              
+              //3
+              if(goodsInfo && goodsInfo.length > 2) {
+                //momoj('#'+value['BT_NAME']+'_e62').attr('href' , '/goods/GoodsDetail.jsp?i_code='+goodsInfo[2].GOODS_CODE+'&oid=mb&mdiv=1000000000-'+value['BT_NAME']+'-'+value['BT_NAME']+'_e62&ctype=B&recomd_id='+recomd_id);
+                momoj('#'+value['BT_NAME']+'_e62').attr('href' , '/goods/GoodsDetail.jsp?i_code='+goodsInfo[2].GOODS_CODE+'&oid=mb&mdiv=1000000000-'+value['BT_NAME']+'-'+value['BT_NAME']+'_e62&ctype=B&'+'&rec_pos=1pp_s3');//hermes版edit
+                momoj('#'+value['BT_NAME']+'_e62').attr('title' , goodsInfo[2].GOODS_NAME);
+                momoj('#'+value['BT_NAME']+'_e62').attr('title' , goodsInfo[2].GOODS_NAME);
+                momoj('#'+value['BT_NAME']+'_e63').attr('alt' , goodsInfo[2].GOODS_NAME);
+                momoj('#'+value['BT_NAME']+'_e63').attr('org' , goodsInfo[2].GOODS_IMG);
+                momoj('#'+value['BT_NAME']+'_e63').attr('src' , '/ecm/img/cmm/blank.png');
+                momoj('#'+value['BT_NAME']+'_e64').text(goodsInfo[2].GOODS_Tittle);
+                momoj('#'+value['BT_NAME']+'_p6').attr('class' , 'GDS-'+goodsInfo[2].GOODS_CODE);
+                momoj('#'+value['BT_NAME']+'_e62 .price'+' .GDS-'+goodsInfo[2].GOODS_CODE).removeAttr("style");
+                momoj('#'+value['BT_NAME']+'_e62 .price').empty();
+                momoj('#'+value['BT_NAME']+'_e62 .price').html('$<b>'+goodsInfo[2].GOODS_Price+'</b>');
+              }
+
+              momoj('#'+value['BT_NAME']+'_e52 , #'+value['BT_NAME']+'_e58 , #'+value['BT_NAME']+'_e64').attr('style','width:90px;');
+            }
+                
+                //---------------------工研院個人化推薦商品置入--------------------------------------
+          }
+          
+          _html[_index]= _btlayout[0].outerHTML;
+          _node[_index]= _btlayout;
+          _index ++;
+        }
+      }
+      //刪除,重組樓層
+      momoj('.btfloor').wrapAll('<div id="btfloor"></div>');
+      momoj('.btfloor').remove();
+      //momoj('#bt_0_235_01').after('<div id="btfloor"></div>');
+      var _btfloor = momoj('#btfloor');
+      for(var i=0;i<_html.length;i++){
+        _btfloor.append(_html[i]);
+      }
+    }else{
+      //如果完全取不到資料 (ECM及工研院API皆無資料 則手動將區塊組好)
+      //取得樓層名稱
+      var _bt = momoj('.btfloor > h3 .sso_e1_title');
+      //取得樓層ID
+      var _bt_id = momoj('.btfloor');
+      for(var i=0;i<_bt.length;i++){
+        var floor ='floor_'+( (i<10)?'0'+(i+1):(i+1));
+        bt_0215.append('<li org="'+floor+'">'+_bt[i].innerHTML+'</li>');
+        momoj('#'+_bt_id[i].id).addClass(floor);
+      }
+    }
+    
+    //樓層推薦區塊所有超連結加上recomd_id
+    momoj('#btfloor ul li a').each(function(){
+      var _a=momoj(this);
+      var _href=momoj(this).attr('href')+'&recomd_id='+recomd_id;
+      _a.attr('href',_href);
+    });
+
+    var hidefloorTipsVal ="";
+    momoj(window).scroll(function(e){
+/**
+  顯示左側樓層選單
+  樓層01(美妝保養) 、 樓層02(服飾內著) 、 樓層03(精品鞋包) 、 樓層04(量販美食) 、 樓層05(生活用品) 、 樓層06(樂活保健) 、 樓層07(3C電子  ) 、 樓層08(家電品牌) 、 樓層09(運動傢寢) 、 樓層10(圖書影音) 、 樓層11(戶外旅遊) 、 
+  @author lckao 2020.06.09 新增第十一樓層
+**/
+      var topval = momoj("body").scrollTop();
+      var scrollTopDoc = document.documentElement.scrollTop;
+      
+      var oBt_0_215_01 = momoj("#bt_0_215_01");
+      var oListLi_bt_0_215_01 = momoj("#bt_0_215_01 li");
+      
+      var floorNum;
+      var maxFloorNum = 11;
+      var jsonFloorOffset = {};
+      for(var indexFloor = 0;indexFloor < maxFloorNum;indexFloor++){
+        floorNum = indexFloor + 1;
+        jsonFloorOffset[indexFloor] = momoj(".floor_" + ((floorNum < 10) ? '0' + floorNum : floorNum)).offset();
+      }
+      
+      var offsetFloor;
+      var targarOffset;
+      for(var indexFloor = 0;indexFloor < maxFloorNum;indexFloor++){
+        targarOffset = jsonFloorOffset[indexFloor];
+        if(targarOffset != null){
+          offsetFloor = targarOffset.top - (document.documentElement.clientHeight / 2) - 20;
+          if (scrollTopDoc > offsetFloor || topval > offsetFloor) {
+            if(indexFloor == 0){
+              oBt_0_215_01.show();
+            }
+            oListLi_bt_0_215_01.removeClass("selected");
+            oListLi_bt_0_215_01.eq(indexFloor).addClass("selected");
+            hidefloorTipsVal = targarOffset.top + 100;//因為區塊會變動所以抓最後一層加上高度,來當要隱藏的高度
+          } else {
+            if(indexFloor == 0){
+              oBt_0_215_01.fadeOut("slow");
+            }
+          }
+        }
+      }
+
+      if(hidefloorTipsVal){
+        if (scrollTopDoc > hidefloorTipsVal) {
+          oBt_0_215_01.hide();
+        }
+      }
+
+    });
+    
+    /** 點擊左側各樓層 **/
+    momoj("#bt_0_215_01").unbind("li").delegate("li","click",function(){
+      var runfloor = momoj(this).attr("org");
+      var oOffset = momoj("."+runfloor).offset();
+      if(oOffset){
+        momoj('html,body').animate({scrollTop:oOffset.top-(document.documentElement.clientHeight/2)+200},2000);
+      }
+    })
+    /*;
+    //滑鼠移動效果
+    momoj("#bt_0_215_01").unbind("li").delegate("li","mouseover",function(e){
+      var runfloor = momoj(this).attr("org");
+      if(e.type=='mouseover'){
+        momoj('html,body').animate({scrollTop:momoj("."+runfloor).offset().top-(document.documentElement.clientHeight/2)+200},2000);
+        //momoj('html,body').scrollTop(momoj("."+runfloor).offset().top-(document.documentElement.clientHeight/2)+200);
+      }
+    });
+    */
+  }
+  
+  $.fn.Hr24Tips = function(){
+  var _bt208 = momoj('#bt_0_208_01 .view >ul >li');
+  var _Show=Math.floor(Math.random()*2);
+  var _start = (4*_Show)+1;
+  var _end = (4*_Show)+4;
+  for(var i=_start;i<=_end;i++){
+    momoj('#bt_0_208_01_P1_'+i).hide();
+  }
+
+  }
+  //載入youtube btId:區塊名稱  width:寬 height:高
+  $.fn.intputyoutube = function(btId , width , height){
+      var _movie = momoj('#'+btId+' .TabContent .TabContentD .movieArea .movieSrc')
+      for(var i=0;i<_movie.length;i++){
+        var _movieArea =  _movie[i];
+        _movieArea.innerHTML  = '<iframe width="'+width+'" height="'+height+'" src="'+_movieArea.innerHTML+'" frameborder="0" allowfullscreen></iframe>';
+      }
+    }
+  $.fn.bt095wrap = function(btId){
+      var $block = $('#'+btId+'_big'),
+      $wrap = $('#'+btId+'_big .TabContent'),
+      $ul = $wrap,
+      $li = $('#'+btId+'_big .TabContent div'),
+      $dli = $('#'+btId+'_big .TabMenu li');
+      
+      var _count = 0;
+      $dli.find('p').each(function(){
+         var _span = $(this);
+         if( $.trim(_span.html())=='1'){
+           _count++;
+         }
+      });
+      if(_count == 5){
+        $('#'+btId+'_big .arrows').hide();
+        $('#'+btId+'_big .TabMenu').hide();
+      }
+
+      
+      _default = 0,
+      _width = $wrap.width(),
+      animateSpeed = 400;
+      $('#'+btId+'_big'+' .arrows').delegate('div', 'click', function(event){
+              var divId = $(this).parent('div').parent('div').parent('div').attr('id');
+              $li = $('#'+divId+'_big .TabContent div');
+              $dli = $('#'+divId+'_big .TabMenu li');
+              $wrap = $('#'+divId+'_big .TabContent');
+              $ul = $wrap;
+              _width = $wrap.width();
+              // 先找出 .selected 的元素後移掉該樣式
+              var $selected = $li.filter('.selected').removeClass('selected'),
+              // 找出目前顯示的元素是第幾個
+              _index = $li.index($selected);
+              
+               $dli.filter('.selected').removeClass('selected');
+               // 依點擊的是上一張或下一張來切換
+               _index = (event.target.className == 'leftBtn' ? _index - 1 + $li.length : _index + 1) % $li.length;
+               for(var i=0;i<5;i++){
+                 if($dli.eq(_index).find('p').html() != null && $.trim($dli.eq(_index).find('p').html()) =='1' ){
+                   _index = (event.target.className == 'leftBtn' ? _index - 1 + $li.length : _index + 1) % $li.length;
+                 }
+               }
+               $li.eq(_index).addClass('selected');
+         $li.eq(_index).find('[lazy=1],[lazy=2]').each(function(){
+                 $(this).attr("src", $.getImgSrc({org:$(this).attr("org")}));
+                 $(this).removeAttr("lazy");
+               });
+               $dli.eq(_index).addClass('selected');
+               $ul.animate({
+                       left: _index * _width * -1
+               }, animateSpeed);
+               // 改變標題
+              
+              return false;
+      });
+      // 先顯示預設的
+      $ul.css('left', _default * _width * -1);
+      $('#'+btId+'_big'+' .arrows').focus(function(){
+              this.blur();
+      });
+  }
+  
+  $.fn.bt023wrap = function(btId){
+    var $block = $('#'+btId),
+      $wrap = $('#'+btId+' .TabContent'),
+      $ul = $wrap,
+      $li = $('#'+btId+' .TabContent div'),
+      $dli = $('#'+btId+' .TabMenu li');
+
+      _default = 0,
+      _width = $wrap.width(),
+      animateSpeed = 400;
+      $('.arrows').delegate('div', 'click', function(event){
+        var divId = $(this).parent('span').parent('div').parent('div').attr('id');
+              $li = $('#'+divId+' .TabContent div');
+              $dli = $('#'+divId+' .TabMenu li');
+              $wrap = $('#'+divId+' .TabContent');
+              $ul = $wrap;
+              _width = $wrap.width();
+              // 先找出 .selected 的元素後移掉該樣式
+              var $selected = $li.filter('.selected').removeClass('selected'),
+              // 找出目前顯示的元素是第幾個
+              _index = $li.index($selected);
+              
+               $dli.filter('.selected').removeClass('selected');
+               // 依點擊的是上一張或下一張來切換
+               _index = (event.target.className == 'leftBtn' ? _index - 1 + $li.length : _index + 1) % $li.length;
+               for(var i=0;i<5;i++){
+                 if($dli.eq(_index).find('p').html() != null && $.trim($dli.eq(_index).find('p').html()) =='1' ){
+                   _index = (event.target.className == 'leftBtn' ? _index - 1 + $li.length : _index + 1) % $li.length;
+                 }
+               }
+               $li.eq(_index).addClass('selected');
+         $li.eq(_index).find('[lazy=1],[lazy=2]').each(function(){
+                 $(this).attr("src", $.getImgSrc({org:$(this).attr("org")}));
+                 $(this).removeAttr("lazy");
+               });
+               $dli.eq(_index).addClass('selected');
+               $ul.animate({
+                       left: _index * _width * -1
+               }, animateSpeed);
+               // 改變標題
+              
+              return false;
+      });
+      // 先顯示預設的
+      $ul.css('left', _default * _width * -1);
+      $('.arrows').focus(function(){
+              this.blur();
+      });
+
+  }
+  
+  /** 排行榜_類別打開 **/
+  $.fn.rankingList = function() {
+    var bt = momoj('#bt_0_233_01');
+    var chooseBox = momoj('.chooseBox');
+    bt.on("mouseenter", '.openchooseBtn', function(){
+      chooseBox.show();
+    }).on("mouseleave", '.openchooseBtn', function(){
+      setTimeout(function() {
+        if (chooseBox.data('show') === false){
+          chooseBox.hide();
+        }
+      }, 200);
+    });
+    bt.on("mouseenter", chooseBox.selector, function(){
+      chooseBox.data('show', true);
+      chooseBox.unbind('li').delegate('li', 'click', function() {
+        var _a = momoj(this);
+        //bt.selector is #bt_0_233_01
+        momoj(bt.selector + ' h4').text(_a.html()); 
+        //chooseBox.selector is .chooseBox
+        momoj(bt.selector + ' ' + chooseBox.selector + ' ul li').removeClass('selected');
+        momoj('#'+_a.attr('id')).addClass('selected');
+        momoj('.rankingList').each(function() {
+          momoj(this).hide();
+        });
+        momoj('#rankingList_'+_a.attr('id')).show();
+        chooseBox.hide();
+      });
+    }).on("mouseleave", chooseBox.selector, function(){
+      momoj(bt.selector + ' ' + chooseBox.selector).data('show', false);
+      chooseBox.hide();
+    });
+  }
+  $.fn.custExclBuyLoad = function(options) {
+    var settings = {
+      threshold    : 0,
+      failurelimit : 0,
+      event        : "scroll",
+      effect       : "show",
+      container    : window
+    };
+            
+    if(options) {
+      $.extend(settings, options);
+    }
+    var elements = this;
+    if ("scroll" == settings.event) {
+      $(settings.container).bind("scroll", function(event) {
+        var counter = 0;
+        elements.each(function() {
+          if (!this.loaded && !$.belowthefold(this, settings) &&
+            !$.rightoffold(this, settings) && !$(this).is(":hidden") ) {
+            $(this).trigger("appear");
+          }
+        });
+        var temp = $.grep(elements, function(element) {
+          return !element.loaded;
+        });
+        elements = $(temp);
+      });
+    }        
+    this.each(function() {
+      var self = this;
+      $(self).one("appear", function() {
+        if (!this.loaded) {
+          momoj.getScript("//img1.momoshop.com.tw/ecm/js/custExclBuy.js?t=20201119001");
+          self.loaded = true;
+        };        
+      });
+      if($(self).is(":hidden")){
+        $(self).one("mousemove",function(){
+          $(this).trigger("appear");
+        });
+      }
+      if ("scroll" != settings.event) {
+        $(self).bind(settings.event, function(event) {
+          if (!self.loaded) {
+            $(self).trigger("appear");
+          }
+        });
+      }
+    });
+  }
+  $.fn.newCustExclBuyLoad = function(options) {
+      var settings = {
+        threshold    : 0,
+        failurelimit : 0,
+        event        : "scroll",
+        effect       : "show",
+        container    : window
+      };
+              
+      if(options) {
+        $.extend(settings, options);
+      }
+      var elements = this;
+      if ("scroll" == settings.event) {
+        $(settings.container).bind("scroll", function(event) {
+          var counter = 0;
+          elements.each(function() {
+            if (!this.loaded && !$.belowthefold(this, settings) &&
+              !$.rightoffold(this, settings) && !$(this).is(":hidden") ) {
+              $(this).trigger("appear");
+            }
+          });
+          var temp = $.grep(elements, function(element) {
+            return !element.loaded;
+          });
+          elements = $(temp);
+        });
+      }        
+      this.each(function() {
+        var self = this;
+        $(self).one("appear", function() {
+          if (!this.loaded) {
+            momoj.getScript("/ecm/js/newCustExclBuy.js?t=20201119001");
+            self.loaded = true;
+          };        
+        });
+        if($(self).is(":hidden")){
+          $(self).one("mousemove",function(){
+            $(this).trigger("appear");
+          });
+        }
+        if ("scroll" != settings.event) {
+          $(self).bind(settings.event, function(event) {
+            if (!self.loaded) {
+              $(self).trigger("appear");
+            }
+          });
+        }
+      });
+    }
+  $.fn.ShowVideoFun = function(){
+    var container=momoj(this);
+    container.find('.showVideo').each(function(){
+      var containerParent=momoj(this).parent();
+      if(momoj(this).text() == "1"){
+        containerParent.addClass("viewVideo");
+        containerParent.find('.openvideoBtn').attr('title',containerParent.find('img').attr('title'));
+        containerParent.find('.openvideoBtn').attr('vlink',containerParent.find('.videoUrl').text())
+      }else{
+        containerParent.removeClass("viewVideo");
+      }
+    });
+    
+    momoj.ajax({
+      url:"/ecm/js/video.js?t=20200707001",
+      dataType:"script",
+      cache:true,
+      success:function(){
+        container.bindVideo({youtubeArea:'bt_0_236_youtubeArea'});
+      }
+    });
+  }
+  $.fn.NewBtBanner = function(_settings){
+    var container=momoj(this);
+    if(/ecm/i.test(location.href) && momoj('#BTM-form').css('display')=='block'){
+      return;
+    }
+    var _html = container.html();
+    _html = _html.replace(/<ul/g,"<div");
+    _html = _html.replace(/<\/ul/g,"<\/div");
+    _html = _html.replace(/<li/g,"<div");
+    _html = _html.replace(/<\/li/g,"<\/div");
+    container.html(_html);
+    momoj().btBannerWrap(container, _settings); 
+  }
+  $.fn.btBannerWrap = function(_container, _settings){
+    var settings = {
+      random   : true,
+      position : 0
+    };
+    if(_settings) {
+      momoj.extend(settings, _settings);
+    }
+    var _tabContentD = momoj('.TabContentD',_container);
+    var _tabContent = momoj('.TabContent',_container);
+    var _tabMenu = momoj('.TabMenu',_container);
+    var _arrows = momoj('.arrows',_container);
+    var _tabMenuLi;
+    var _count = _tabContentD.length;
+    var _default = 0;
+    var _index = 0;
+    var _width = 0;
+    var animateSpeed = 400;
+    var _tabRan = 0;
+    
+    if(_count > 1){
+      _tabMenu.append('<ul></ul>');
+      for(var i=0;i<_count;i++){
+        momoj('.TabMenu ul',_container).append('<li></li>')
+      }
+      
+      if(!settings.random){
+        _tabRan = settings.position;
+      }else{
+        _tabRan =  (Math.round(Math.random()*_count));
+        if(_tabRan > 1) _tabRan--;  
+      }
+      
+      
+      _tabContentD.eq(_tabRan).find('[lazy=1],[lazy=2]').each(function(){
+        if(!!momoj.getImgSrc({org:momoj(this).attr("org")})) {
+          momoj(this).attr("src", momoj.getImgSrc({org:momoj(this).attr("org")}));
+        }
+        momoj(this).removeAttr("lazy");
+      });
+
+    }else{
+      _arrows.hide();
+      _tabMenu.hide();
+    }
+    
+    momoj('.TabMenu li',_container).eq(_tabRan).addClass('selected');
+    _tabContentD.eq(_tabRan).addClass('selected').show();
+    _tabContent.attr('style','left:' + _default * _width * -1 + 'px');
+
+    _tabMenu.delegate('li','mouseover',function(){
+      _tabContentD.removeClass('selected'); 
+      _tabMenu.removeClass('selected'); 
+      _tabMenu.find('li').removeClass('selected'); 
+      momoj(this).addClass('selected');
+      _tabContentD.eq($(this).index()).addClass('selected').show();
+       
+      _tabContentD.eq($(this).index()).find('[lazy=1],[lazy=2]').each(function(){
+        if(!!momoj.getImgSrc({org:momoj(this).attr("org")})) {
+          momoj(this).attr("src", momoj.getImgSrc({org:momoj(this).attr("org")}));
+        }
+        momoj(this).removeAttr("lazy");
+      });
+    });     
+    
+    _arrows.delegate('a', 'click', function(event){
+      var divContainer = momoj(this).parent('div').parent('div');
+      _tabContentD = momoj('.TabContentD',divContainer);
+      _tabMenuLi = momoj('.TabMenu li',divContainer);
+      _tabContent = momoj('.TabContent',divContainer);
+      _width = _tabContent.width();
+      // 先找出 .selected 的元素後移掉該樣式
+      // 找出目前顯示的元素是第幾個
+      _index = _tabContentD.index(_tabContentD.filter('.selected').removeClass('selected'));
+      _tabMenuLi.filter('.selected').removeClass('selected');
+      // 依點擊的是上一張或下一張來切換
+      _index = (event.target.className == 'leftBtn' ? _index - 1 + _tabContentD.length : _index + 1) % _tabContentD.length;
+      _tabContentD.eq(_index).addClass('selected');
+      _tabContentD.eq(_index).find('[lazy=1],[lazy=2]').each(function(){
+        momoj(this).attr('src', momoj.getImgSrc({org:momoj(this).attr("org")}));
+        momoj(this).removeAttr('lazy');
+      });
+      _tabMenuLi.eq(_index).addClass('selected');
+      _tabContent.animate({left: _index * _width * -1}, animateSpeed);
+      return false;
+    });
+  }
+  $.fn.processBlock999 = function(btId){
+    var blockVal = btId.substring(0,8);
+    
+    var heightVal = parseInt(momoj('#'+btId + '_e3').text());
+    if('number' != typeof(heightVal)){
+      heightVal = 0;
+    }
+    
+    var hiddenVal = momoj('#'+btId + '_e2').text();
+    if(hiddenVal != 1){
+      heightVal = 0;
+      momoj('#'+btId).find('.' + blockVal + '_layout').empty();
+    }
+    momoj('#'+btId).find('.' + blockVal + '_layout').css('height',heightVal);
+    
+  }
+  $.fn.setGoodsImgTag = function(_settings){
+    var container=momoj(this);
+    var displayBlock = momoj('.displayBlock',container).text();
+    if((/ecm/i.test(location.href) && container.parents('#preview').length > 0) || displayBlock == 'off'){
+      return;
+    }
+    var goodsimg = '/goodsimg/';
+    var imgTagArray = new Array();
+    var n =0;
+    container.find('img').each(function(){
+      var imgUrl='';
+      if(typeof momoj(this).attr('org') != 'undefined' && momoj(this).attr('org').indexOf(goodsimg) > -1){
+        imgUrl = momoj(this).attr('org');
+      }else if(typeof momoj(this).attr('src') != 'undefined' && momoj(this).attr('src').indexOf(goodsimg) > -1){
+        imgUrl = momoj(this).attr('src');
+      }
+      if(imgUrl!=''){
+        var imgUrlArr = imgUrl.substring(imgUrl.lastIndexOf("/")+1,imgUrl.indexOf("?")).split("_");
+        imgTagArray[n]=imgUrlArr[0];
+        n++;
+      }
+     
+    });
+    if(imgTagArray.length>0){
+      momoj.ajaxTool({
+        async: true,
+        data:{flag: 2026,goodsCode: imgTagArray},
+        ajaxSuccess:function(_rtnObj) { 
+          var x = 0;
+          container.find('li').each(function(){
+            var imgUrlUrl = _rtnObj.rtnData.result[x];
+            momoj(this).children('a').children('img').wrap('<div class=\"prdGoodsImgWrap\"></div>');
+            if(imgUrlUrl!=''){
+              momoj(this).find('.prdGoodsImgWrap').prepend('<span class="goodsImgTag"><img src="'+ imgUrlUrl +'"></span>');
+            }
+            x++;
+          });
+        }
+      });
+    }
+    
+  }
+  
+  
+})(jQuery);
+/** 爆殺24H 左右側按鈕 **/
+function h24click(btId){
+    var dis = momoj('#'+btId+'_P1_1').css('display');
+    if( dis != 'none' ){
+      momoj('#'+btId+'_P1_1').hide();
+      momoj('#'+btId+'_P1_2').hide();
+      momoj('#'+btId+'_P1_3').hide();
+      momoj('#'+btId+'_P1_4').hide();
+      momoj('#'+btId+'_P1_5').show();
+      momoj('#'+btId+'_P1_6').show();
+      momoj('#'+btId+'_P1_7').show();
+      momoj('#'+btId+'_P1_8').show();
+    }else{
+      momoj('#'+btId+'_P1_1').show();
+      momoj('#'+btId+'_P1_2').show();
+      momoj('#'+btId+'_P1_3').show();
+      momoj('#'+btId+'_P1_4').show();
+      momoj('#'+btId+'_P1_5').hide();
+      momoj('#'+btId+'_P1_6').hide();
+      momoj('#'+btId+'_P1_7').hide();
+      momoj('#'+btId+'_P1_8').hide();
+    }
+  }
+
+/**爆殺24H的倒數**/
+function refreshTime(){   
+  var _today = new Date();
+  var _endD = new Date(_today.getFullYear(), _today.getMonth(), _today.getDate()+1);
+  var _endS = _endD.getTime();
+  var _nowD = new Date();
+  var _nowS = _nowD.getTime();
+  
+  var _secs=parseInt((_endS-_nowS)/1000,10);
+  var _hh=parseInt(_secs/3600,10);
+  var _mm=parseInt(Math.floor((_secs%3600)/60),10);
+  var _ss=parseInt(Math.floor(_secs%60),10);
+  if(_hh.toString().length<2)_hh='0'+_hh.toString();
+  if(_mm.toString().length<2)_mm='0'+_mm.toString();
+  if(_ss.toString().length<2)_ss='0'+_ss.toString();
+  momoj('#hh').html(_hh);
+  momoj('#mm').html(_mm);
+  momoj('#ss').html(_ss);
+      
+  setTimeout("refreshTime()",100);
+}
+/** 時間倒數 **/
+function mRefreshTime(btId,_endD){   
+  var _endS = new Date(_endD).getTime();
+  var _nowD = new Date();
+  var _nowS = _nowD.getTime();
+  
+  var _secs=parseInt((_endS-_nowS)/1000,10);
+  var _hh=parseInt(_secs/3600,10);
+  var _mm=parseInt(Math.floor((_secs%3600)/60),10);
+  var _ss=parseInt(Math.floor(_secs%60),10);
+  if(_hh.toString().length<2)_hh='0'+_hh.toString();
+  if(_mm.toString().length<2)_mm='0'+_mm.toString();
+  if(_ss.toString().length<2)_ss='0'+_ss.toString();
+  momoj("#"+btId).find('.hh').html(_hh);
+  momoj("#"+btId).find('.mm').html(_mm);
+  momoj("#"+btId).find('.ss').html(_ss);
+      
+  setTimeout("mRefreshTime('"+btId+"','"+_endD.toString()+"')",100);
+}
+function bkArea() {
+  if(momoj('body').find('.fancybox-overlay').length == 0){
+    momoj('body').append('<div class="fancybox-overlay"></div>');
+  }
+  var bodywidth = momoj("body")[0].clientWidth; /** 將整個body的寬度置入bodywidth **/
+  var bodyheight = momoj("body")[0].clientHeight; /** 將整個body的高度置入bodyheight **/
+  momoj(".fancybox-overlay").css({"width":+ bodywidth+"px","height":+bodyheight+"px"}).fadeTo("slow",0.5); /** 將body的寬高置入此層，然後淡出透明度0.5 **/
+}
+
+/** 推送recomd_id **/
+function sendRecommendId(recomd_id){
+
+  /** momowa start **/
+  var pathname = location.pathname;
+  var momowaSiteId = "shop";
+  var ua = navigator.userAgent.toLowerCase();
+  if(isMobile(ua)){ //手機裝置
+    if(ua.indexOf("momoshop") >= 0){
+      momowaSiteId = "shopapp";    //APP
+    }else{
+      momowaSiteId = "shopmobile"; //WEB
+    }
+  }
+  var noTrackmomowa = (location.pathname == "/goods/GoodsDetail.jsp") && (/^#(info|spec|gifts)$/.test(location.hash));
+  if(pathname == "/main/Main.jsp" || pathname == "/category/LgrpCategory.jsp" 
+      || pathname == "/category/DgrpCategory.jsp" || pathname == "/goods/GoodsDetail.jsp"){
+    if(typeof recomd_id == "string" && !noTrackmomowa && momowaCmds){
+      momowaCmds.push(['setSiteId',momowaSiteId]);
+      momowaCmds.push(['setTrackerUrl','https://momowa.momoshop.com.tw/momowa/rc/RC.MMW']);
+      momowaCmds.push(['setRecommendId',recomd_id]);
+      momowaCmds.push(['trackPageView']);
+    }
+  }
+  (function() {
+    var _mwa = document.createElement('script');
+    _mwa.type = 'text/javascript';
+    _mwa.async = true;
+    _mwa.src = 'https://momowa.momoshop.com.tw/momowa/rc/js/momowa.js?_=20200513001';
+    var _mwa_s = document.getElementsByTagName('script')[0];
+    _mwa_s.parentNode.insertBefore(_mwa, _mwa_s);
+  }());
+  /** momowa end **/
+}
+
+
+ 
+
+
